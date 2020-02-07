@@ -5,7 +5,6 @@ import { config } from "./config";
 //#endregion
 //#region Class
 import { DBshux } from "./dbshux";
-import { MSGshux } from "./msg";
 //#endregion
 //#endregion
 
@@ -16,12 +15,11 @@ client.on("ready", () => {
     console.log("Ready to go!!!");
     const server_: any = client.guilds.get('392414185633611776');
     server_.channels.get('675061892863098890').send('SHUX ESTA PRENDIDO');
-    
+
 });
 client.on("guildMemberAdd", member => { member.addRole('674086387510673414'); });
-client.on("message", async msg => {
-    let msg_ = new MSGshux(client, iniDB);
-    msg_.getMSG(msg);
+client.on("message", msg => {
+    
 });
 client.on('messageReactionAdd', async (reaction, user) => {
 });
