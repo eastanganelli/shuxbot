@@ -4,12 +4,12 @@ import * as Discord from "discord.js";
 import { config } from "./config";
 //#endregion
 //#region Class
-import { DBshux } from "./dbshux";
+/* import { DBshux } from "./dbshux"; */
 //#endregion
 //#endregion
 
 export const client: Discord.Client = new Discord.Client();
-const iniDB = new DBshux();
+/* const iniDB = new DBshux(); */
 
 client.on("ready", () => { 
     console.log("Ready to go!!!");
@@ -19,7 +19,7 @@ client.on("ready", () => {
 });
 client.on("guildMemberAdd", member => { member.addRole('674086387510673414'); });
 client.on("message", msg => {
-    
+
 });
 client.on('messageReactionAdd', async (reaction, user) => {
 });
