@@ -1,9 +1,9 @@
 import * as Discord from "discord.js";
-import { DBshux } from "./dbshux";
+/* import { DBshux } from "./dbshux"; */
 import { fbuser } from "./interfaces/users";
 
 export class MSGshux {
-    constructor(private dsClient: Discord.Client, private dbClient: DBshux) {
+    constructor(private dsClient: Discord.Client/* , private dbClient: DBshux */) {
         
     }
     getMSG(msg: Discord.Message) {
@@ -11,17 +11,17 @@ export class MSGshux {
             if(msg.channel.type == 'dm') { this.dmSYS(msg); }
             else { this.pubSYS(msg); }
         }
-        if(msg.author.bot)    { return; }
+        if(msg.author.bot) { return; }
     }
     async dmSYS(msg: Discord.Message) {
         if(msg.content.toLocaleLowerCase().startsWith('shux!')) {
             switch (msg.content.toLocaleLowerCase()) {
                 case 'shux!addfc':{
-                    await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
+                    /* await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
                         this.dbClient.updateFC(msg.author.id,collected.first().content);
                         msg.author.send('Su fecha de cumpleaños ha sido guardada');
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); }); */
                     break;
                 } case 'shux!consulta':{
                     await msg.author.send('Por favor escriba su consulta referida a **HARDWARE / SOFTWARE**\nSi desea cancelar -> #cancelar');
@@ -77,15 +77,15 @@ export class MSGshux {
         if(msg.content.startsWith('shux!')) {
             switch (msg.content) {
                 case 'shux!perfil':{
-                    this.dbClient.getUser(msg.author.id).then((user_: any) => {
-                        const userData: fbuser = user_;
+                    /* const data_: fbuser|any = this.dbClient.getUser(msg.author.id).then((user_: any) => {
+                        const userData: fbuser = data_;
                         let embed_: Discord.RichEmbed = new Discord.RichEmbed();
                         embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: '+String(userData.birth), false)
                         .addField('Reports: '+userData.report, false)
                         .addField('Expulsiones: '+userData.expulsiones, false)
                         .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
                         msg.channel.send(embed_);
-                    });
+                    }); */
                     break;
                 } default:
                     break;

@@ -1,1 +1,1 @@
-# shuxbot
+# kampfegruppebot
