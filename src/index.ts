@@ -1,7 +1,10 @@
 //#region IMPORTS
 //#region Plug
 import * as Discord from "discord.js";
-import { config } from "./config";
+import { config, firebaseConfig } from "./config";
+import * as firebase from "firebase/app";
+import 'firebase/auth';
+import "firebase/database";
 //#endregion
 //#region Class
 import { iniDB } from "./dbshux";
@@ -10,6 +13,7 @@ import { MSGshux } from "./msg";
 //#endregion
 
 export const client: Discord.Client = new Discord.Client();
+let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 
 client.on("ready", () => { 
     console.log("Ready to go!!!");

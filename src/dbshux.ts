@@ -1,14 +1,12 @@
 import * as firebase from "firebase/app";
 import 'firebase/auth';
 import "firebase/database";
-import { firebaseConfig, db } from "./config";
+import { db } from "./config";
 import { fbuser } from "./interfaces/users";
 
-let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
-
 export function iniDB() {
-        firebase.auth().signInWithEmailAndPassword(db.user, db.pass).then(() => { console.log('BOT DB Connected') }).catch(Err => { console.log(Err); });
-    }
+    firebase.auth().signInWithEmailAndPassword(db.user, db.pass).then(() => { console.log('BOT DB Connected') }).catch(Err => { console.log(Err); });
+}
 //#region GETs
     export function getUser(dsID: string|number) {
         return new Promise((resolve, reject) => {
