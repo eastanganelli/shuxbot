@@ -3,12 +3,11 @@
 import * as Discord from "discord.js";
 import { config, firebaseConfig } from "./config";
 import * as firebase from "firebase/app";
-import 'firebase/auth';
 import "firebase/database";
 //#endregion
 //#region Class
 import { iniDB } from "./dbshux";
-import { MSGshux } from "./msg";
+import { getMSG } from "./msg";
 //#endregion
 //#endregion
 
@@ -24,8 +23,7 @@ client.on("ready", () => {
 });
 client.on("guildMemberAdd", member => { member.addRole('674086387510673414'); });
 client.on("message", async msg => {
-    let msg_ = new MSGshux(client);
-    msg_.getMSG(msg);
+    getMSG(msg);
 });
 client.on('messageReactionAdd', async (reaction, user) => {
 });
