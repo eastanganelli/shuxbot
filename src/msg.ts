@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-/* import { DBshux } from "./dbshux"; */
-import { fbuser } from "./interfaces/users";
+import { User } from "./user";/* 
+import { fbuser } from "./interfaces/users"; */
 
 export class MSGshux {
     constructor(private dsClient: Discord.Client/* , private dbClient: DBshux */) {
@@ -17,11 +17,12 @@ export class MSGshux {
         if(msg.content.toLocaleLowerCase().startsWith('shux!')) {
             switch (msg.content.toLocaleLowerCase()) {
                 case 'shux!addfc':{
-                    /* await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
+                    await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
-                        this.dbClient.updateFC(msg.author.id,collected.first().content);
+                        let user_ = new User();
+                        user_.addfc(msg.author.id,collected.first().content);
                         msg.author.send('Su fecha de cumpleaños ha sido guardada');
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); }); */
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
                     break;
                 } case 'shux!consulta':{
                     await msg.author.send('Por favor escriba su consulta referida a **HARDWARE / SOFTWARE**\nSi desea cancelar -> #cancelar');

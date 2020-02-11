@@ -10,7 +10,7 @@ export const firebaseConfig = {
     storageBucket: "shuxserver.appspot.com",
     messagingSenderId: "870136584235",
     appId: "1:870136584235:web:10c665fc574d8c7645726e"
-};
+  };
 export const db = {
     user: 'shuxbot@discord.bot.io',
     pass: 'BJM&83TqEe5E&BwzfsUejPdGsGhM$a'

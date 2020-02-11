@@ -1,7 +1,7 @@
 {
-  "name": "kpmf",
+  "name": "shux",
   "version": "1.0.0",
-  "description": "KPMG BOT",
+  "description": "SHUX BOT",
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
@@ -11,8 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "firebase": "^6.3.5",
-    "opusscript": "0.0.6"
+    "firebase": "^7.8.1"
   },
   "devDependencies": {}
 }
