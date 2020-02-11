@@ -1,9 +1,11 @@
 import * as Discord from "discord.js";
 import { User } from "./user";/* 
 import { fbuser } from "./interfaces/users"; */
+import { serverID } from "./config";
+import { fbuser } from "./interfaces/users";
 
 export class MSGshux {
-    constructor(private dsClient: Discord.Client/* , private dbClient: DBshux */) {
+    constructor(private dsClient: Discord.Client) {
         
     }
     getMSG(msg: Discord.Message) {
@@ -19,8 +21,8 @@ export class MSGshux {
                 case 'shux!addfc':{
                     await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
-                        let user_ = new User();
-                        user_.addfc(msg.author.id,collected.first().content);
+                        let user_ = new User(this.dsClient);
+                        user_.setaddfc(msg.author.id,collected.first().content);
                         msg.author.send('Su fecha de cumpleaños ha sido guardada');
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
                     break;
@@ -29,8 +31,8 @@ export class MSGshux {
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
                         this.dsClient.channels.forEach((c: Discord.Channel) => {
                             if(c.id == '674045015084761127') {
-                                const server_: any = this.dsClient.guilds.get('392414185633611776');
-                                server_.channels.get('674045015084761127').send('CONSULTA POR <@'+msg.author.id+'>\n'+collected.first().content);
+                                const server_: any = this.dsClient.guilds.get(serverID);
+                                server_.channels.get('674045015084761127').send('**CONSULTA POR <@'+msg.author.id+'>**\n'+collected.first().content);
                                 msg.author.send('Mensaje enviado\nEspere su respuesta en <#674045015084761127>');
                             }
                         });
@@ -40,15 +42,27 @@ export class MSGshux {
                     await msg.author.send('Estamos bajos los presupuestos');
                     /* await msg.author.send(); */
                     break;
+                } case 'shux!mibuild':{
+                    await msg.author.send('Por favor, ingresa su URL del build de PicPartPicker\nSi no posee un enlace, vaya a https://pcpartpicker.com/');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
+                        let user_ = new User(this.dsClient);
+                        user_.setPCBuilf(msg.author.id,collected.first().content);
+                        msg.author.send('Su build ha sido guardada');
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
+                    break;
                 } case 'shux!report':{
                 
                     break;
                 } case 'shux!propuesta':{
                     await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*\nSi desea cancelar -> #cancelar');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
-                        /* saveFC(collected.first().content).then(() => {
-                            msg.author.send('Su fecha de cumpleaños a sido guardada');
-                        }); */
+                        this.dsClient.channels.forEach((c: Discord.Channel) => {
+                            if(c.id == '673212666210287657') {
+                                const server_: any = this.dsClient.guilds.get(serverID);
+                                server_.channels.get('674045015084761127').send('**SUGERENCIA POR <@'+msg.author.id+'>**\n'+collected.first().content);
+                                msg.author.send('Mensaje enviado\nEspere su respuesta en <#674045015084761127>');
+                            }
+                        });
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
                     break;
                 } case 'shux!entrevista':{
@@ -78,16 +92,16 @@ export class MSGshux {
         if(msg.content.startsWith('shux!')) {
             switch (msg.content) {
                 case 'shux!perfil':{
-                    /* const data_: fbuser|any = this.dbClient.getUser(msg.author.id).then((user_: any) => {
-                        const userData: fbuser = data_;
+                    let user_ = new User(this.dsClient);
+                    user_.getMyProfile(msg.author.id).then((miPerfil: fbuser|any) => {
                         let embed_: Discord.RichEmbed = new Discord.RichEmbed();
-                        embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: '+String(userData.birth), false)
-                        .addField('Reports: '+userData.report, false)
-                        .addField('Expulsiones: '+userData.expulsiones, false)
-                        .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
-                        msg.channel.send(embed_);
-                    }); */
-                    break;
+                    embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: ', String(miPerfil.birth), false)
+                    .addField('Mi PC: ', miPerfil.urlbuild, false)
+                    .addField('Warnings: ', miPerfil.report, false)
+                    .addField('Expulsiones: ', miPerfil.expulsiones, false)
+                    .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
+                    msg.channel.send(embed_);
+                    }); break;
                 } default:
                     break;
             }
