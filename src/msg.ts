@@ -20,7 +20,7 @@ export class MSGshux {
             switch (msg.content.toLocaleLowerCase()) {
                 case 'shux!addfc':{
                     await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 63000, errors: ['TIME'] }).then((collected: any) => {
                         let user_ = new User(this.dsClient);
                         user_.setaddfc(msg.author.id,collected.first().content);
                         msg.author.send('Su fecha de cumpleaños ha sido guardada');
@@ -28,7 +28,7 @@ export class MSGshux {
                     break;
                 } case 'shux!consulta':{
                     await msg.author.send('Por favor escriba su consulta referida a **HARDWARE / SOFTWARE**\nSi desea cancelar -> #cancelar');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
                         this.dsClient.channels.forEach((c: Discord.Channel) => {
                             if(c.id == '674045015084761127') {
                                 const server_: any = this.dsClient.guilds.get(serverID);
@@ -54,13 +54,13 @@ export class MSGshux {
                 
                     break;
                 } case 'shux!propuesta':{
-                    await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*\nSi desea cancelar -> #cancelar');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
+                    await msg.author.send('Por favor ingrese su segurencia / idea\nSi desea cancelar -> #cancelar');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
                         this.dsClient.channels.forEach((c: Discord.Channel) => {
                             if(c.id == '673212666210287657') {
                                 const server_: any = this.dsClient.guilds.get(serverID);
-                                server_.channels.get('674045015084761127').send('**SUGERENCIA POR <@'+msg.author.id+'>**\n'+collected.first().content);
-                                msg.author.send('Mensaje enviado\nEspere su respuesta en <#674045015084761127>');
+                                server_.channels.get('673212666210287657').send('**SUGERENCIA POR <@'+msg.author.id+'>**\n'+collected.first().content);
+                                msg.author.send('Mensaje enviado\nEspere su respuesta en <#673212666210287657>');
                             }
                         });
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
