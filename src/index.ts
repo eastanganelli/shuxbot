@@ -4,7 +4,7 @@ import * as Discord from "discord.js";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
-import { config, firebaseConfig, db, serverID } from "./config";
+import { config, firebaseConfig, db } from "./config";
 //#endregion
 //#region Class
 /* import { DBshux } from "./dbshux"; */
