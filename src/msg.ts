@@ -2,7 +2,7 @@ import * as Discord from "discord.js";
 import { User } from "./user";
 import { serverID } from "./config";
 import { fbuser } from "./interfaces/users";
-import { asignarlvls } from "./index";
+import { dsclient } from ".";
 
 export class MSGshux {
     constructor(private dsClient: Discord.Client) {
@@ -112,7 +112,8 @@ export class MSGshux {
 
                 user_.setVoto(msg.author.id, msg.mentions.users.first().id);
             } if(msg.content.toLocaleLowerCase().includes('shux!translevel')) {
-                asignarlvls(msg.author.id);
+                const usuario = new User(this.dsClient);
+                usuario.asignarlvls(msg.author.id);
             }
         } 
 
