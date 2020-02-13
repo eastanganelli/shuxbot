@@ -1,8 +1,8 @@
 import * as Discord from "discord.js";
-import { User } from "./user";/* 
-import { fbuser } from "./interfaces/users"; */
+import { User } from "./user";
 import { serverID } from "./config";
 import { fbuser } from "./interfaces/users";
+import { asignarlvls } from "./index";
 
 export class MSGshux {
     constructor(private dsClient: Discord.Client) {
@@ -16,7 +16,7 @@ export class MSGshux {
         if(msg.author.bot) { return; }
     }
     async dmSYS(msg: Discord.Message) {
-        if(msg.content.toLocaleLowerCase().startsWith('shux!')) {
+        if(msg.content.toLocaleLowerCase().includes('shux!')) {
             switch (msg.content.toLocaleLowerCase()) {
                 case 'shux!addfc':{
                     await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
@@ -89,23 +89,33 @@ export class MSGshux {
         }
     }
     async pubSYS(msg: Discord.Message) {
-        if(msg.content.startsWith('shux!')) {
-            switch (msg.content) {
-                case 'shux!perfil':{
-                    let user_ = new User(this.dsClient);
-                    user_.getMyProfile(msg.author.id).then((miPerfil: fbuser|any) => {
-                        let embed_: Discord.RichEmbed = new Discord.RichEmbed();
+        if(msg.content.toLocaleLowerCase().includes('shux!')) {
+            if(msg.content.toLocaleLowerCase().includes('shux!perfil')) {
+                let user_ = new User(this.dsClient);
+                user_.getMyProfile(msg.author.id).then((miPerfil: fbuser|any) => {
+                    let embed_: Discord.RichEmbed = new Discord.RichEmbed();
                     embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: ', String(miPerfil.birth), false)
                     .addField('Mi PC: ', miPerfil.urlbuild, false)
                     .addField('Warnings: ', miPerfil.report, false)
                     .addField('Expulsiones: ', miPerfil.expulsiones, false)
                     .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
                     msg.channel.send(embed_);
-                    }); break;
-                } default:
-                    break;
-            }
+                }).catch(() => {
+                    msg.reply('NO tenes un perfil creado')
+                });
+            } if(msg.content.toLocaleLowerCase().includes('shux!mivoto')) {
+                //#region vars
+                    let user_ = new User(this.dsClient);
+                    let menUser = msg.mentions.users.first();
+                    console.log(menUser.username)
+                //#endregion
 
-        }
+                user_.setVoto(msg.author.id, msg.mentions.users.first().id);
+            } if(msg.content.toLocaleLowerCase().includes('shux!translevel')) {
+                asignarlvls(msg.author.id);
+            }
+        } 
+
     }
+    
 }

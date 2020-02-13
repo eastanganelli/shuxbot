@@ -6,6 +6,7 @@ import "firebase/database";
 //#endregion
 import { fbuser } from "./interfaces/users";
 import { serverID } from "./config";
+import { electos } from "./interfaces/elecciones";
 //#endregion
 
 export class User {
@@ -19,7 +20,6 @@ export class User {
         { minLvl: 35, maxLvl: 40,  roleLVL: '675185839772270612' },
         { minLvl: 40, maxLvl: 500, roleLVL: '675185892276699141' },
     ];
-
     constructor(private dsclient: Discord.Client) {  }
     //#region User FNs
         lvlUP(uid: string) {
@@ -34,13 +34,29 @@ export class User {
             });
             
         }
+        eleccionesWinners() {
+            const elecFB = firebase.database().ref('/elecciones');
+            let votaciones: Array<electos> = new Array(0);
+            elecFB.once('value', snapshot => {
+                snapshot.forEach(snap => {
+                    let auxElec: electos = { idElecto: null, idVotantes: 0 };
+                    auxElec.idElecto = snap.key;
+                    snap.forEach(voto => {
+                        auxElec.idVotantes++;
+                    }); votaciones.push(auxElec);
+                }); this.ponsacMonthRol(votaciones);
+            });
+        }
+        ponsacMonthRol(votos: Array<electos>) {
+            //let ;
+        }
     //#endregion
     //#region DB
         //#region GET
             getMyProfile(uid: string) {
                 return new Promise((resolve, reject) => {
-                    const userFB = firebase.database().ref('/users');
-                    userFB.child(uid).once('value', snapshot => {
+                    const userFB = firebase.database().ref('/users').child(uid);
+                    userFB.once('value', snapshot => {
                         resolve({ points: snapshot.val().points, birth: snapshot.val().birth, report: snapshot.val().report, expulsiones: snapshot.val().expulsiones, urlbuild: snapshot.val().urlbuild });
                     }).catch(err => reject(err));
                 });
@@ -48,10 +64,8 @@ export class User {
         //#endregion
         //#region SET
             setaddfc(uid: string, fecha: string){
-                const userFB = firebase.database().ref('/users');
-                userFB.child(uid).update({
-                    birth: fecha
-                });
+                const userFB = firebase.database().ref('/users').child(uid);
+                userFB.update({ birth: fecha });
             }
             setKick(uid: string) {
                 firebase.database().ref('/users').child(uid).once('value', snapshot => {
@@ -61,9 +75,22 @@ export class User {
                 });
             }
             setPCBuilf(uid: string, url_: string) {
-                const userFB = firebase.database().ref('/users');
-                userFB.child(uid).update({
+                const userFB = firebase.database().ref('/users').child(uid);
+                userFB.update({
                     urlbuild: url_
+                });
+            }
+            setVoto(uidVoter: string, uidElector: string) {
+                const eleccionesFB = firebase.database().ref('/elecciones').child(uidElector);
+                let votantes: Array<string> = new Array(0);
+                eleccionesFB.once('value', snapshot => {
+                    snapshot.forEach(item => {
+                        votantes.push(item.val());
+                    }); votantes.push(uidVoter);
+                    eleccionesFB.update(votantes);
+                }).catch(() => {
+                    votantes.push(uidVoter);
+                    eleccionesFB.set(votantes);
                 });
             }
         //#endregion
