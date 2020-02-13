@@ -4,7 +4,6 @@ import * as Discord    from "discord.js";
 import * as firebase   from "firebase/app";
 import "firebase/database";
 //#endregion
-import { fbuser } from "./interfaces/users";
 import { serverID } from "./config";
 import { electos } from "./interfaces/elecciones";
 //#endregion
@@ -69,7 +68,7 @@ export class User {
         
             {
                 for(let i = 1; i < LVLs.length; i++) {
-                    if(shuxMEM.roles.has(LVLs[i].roleLVL)) { return null; }
+                    if(shuxMEM.roles.has(LVLs[i].roleLVL)) { return false; }
                 }
                 shuxMEM.addRole(LVLs[0].roleLVL);
             }
@@ -80,6 +79,7 @@ export class User {
                     if(meeUser.level>=LVLs[i].minLvl && meeUser.level<LVLs[i].maxLvl) { 
                         shuxMEM.addRole(LVLs[i].roleLVL);
                         firebase.database().ref('/users').child(dsID).update({ points: (meeUser.level)*kValue })
+                        return true;
                     }
                 } console.log(`${meeUser.tag} is at level ${meeUser.level} and rank ${meeUser.rank}.`);
             }).catch(() => {});
