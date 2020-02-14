@@ -68,7 +68,10 @@ export class User {
         
             {
                 for(let i = 1; i < LVLs.length; i++) {
-                    if(shuxMEM.roles.has(LVLs[i].roleLVL)) { return false; }
+                    if(shuxMEM.roles.has(LVLs[i].roleLVL)) { 
+                        if(shuxMEM.roles.has(LVLs[0].roleLVL)) { shuxMEM.removeRole(LVLs[i].roleLVL); }
+                        return false; 
+                    }
                 }
                 shuxMEM.addRole(LVLs[0].roleLVL);
             }
