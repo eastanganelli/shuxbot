@@ -4,7 +4,7 @@ import * as Discord from "discord.js";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
-import { config, firebaseConfig, db } from "./config";
+import { config, firebaseConfig, db, serverID } from "./config";
 //#endregion
 //#region Class
 /* import { DBshux } from "./dbshux"; */
@@ -12,6 +12,7 @@ import { MSGshux } from "./msg";
 //#endregion
 //#endregion
 
+const Mee6LevelsApi = require("mee6-levels-api");
 
 export const dsclient: Discord.Client = new Discord.Client();
 let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
@@ -36,7 +37,7 @@ dsclient.on('voiceStateUpdate', (oldMember, newMember) => { });
 dsclient.on("presenceUpdate", (oldMember, newMember) => {
     if(oldMember.presence.status !== newMember.presence.status) {
         //console.log(newMember.user.username + ' is now ' + newMember.presence.status); 
-        if(!(newMember.roles.has('674086387510673414'))) { newMember.addRole('674086387510673414'); }
+        //if(!(newMember.roles.has('674086387510673414'))) { newMember.addRole('674086387510673414'); }
     }
 });
 
