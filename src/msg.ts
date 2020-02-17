@@ -1,7 +1,8 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID } from "./config";
+import { serverID, channelsTC } from "./config";
 import { fbuser } from "./interfaces/users";
+import { dsclient } from ".";
 
 export class MSGshux {
     constructor(private dsClient: Discord.Client) {
@@ -23,18 +24,6 @@ export class MSGshux {
                         let user_ = new User(this.dsClient);
                         user_.setaddfc(msg.author.id,collected.first().content);
                         msg.author.send('Su fecha de cumpleaños ha sido guardada');
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    break;
-                } case 'shux!consulta':{
-                    await msg.author.send('Por favor escriba su consulta referida a **HARDWARE / SOFTWARE**\nSi desea cancelar -> #cancelar');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
-                        this.dsClient.channels.forEach((c: Discord.Channel) => {
-                            if(c.id == '674045015084761127') {
-                                const server_: any = this.dsClient.guilds.get(serverID);
-                                server_.channels.get('674045015084761127').send('**CONSULTA POR <@'+msg.author.id+'>**\n'+collected.first().content);
-                                msg.author.send('Mensaje enviado\nEspere su respuesta en <#674045015084761127>');
-                            }
-                        });
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
                     break;
                 } case 'shux!presupuesto':{
@@ -116,8 +105,20 @@ export class MSGshux {
                     msg.reply('Su rol fue actualizado');
                 } else { msg.reply('Su rol es correcto'); }
             }
-        } 
-
+        } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) {
+            if(msg.content.startsWith('shux!ayuda') || msg.content.startsWith('shux!consulta') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+                console.log('puede entrar')
+            } else if(msg.content.startsWith('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
+                console.log('puede entrar')
+            } if(msg.content.startsWith('shux!entrevista') || isUserEnable(channelsTC.entrevista.roles, msg.author.id)) {
+                console.log('puede entrar')
+            }else { msg.delete(); }
+        }
     }
-    
+}
+function isUserEnable(roles: Array<string>, userDSID: string): boolean {
+    const sv: Discord.Guild|any = dsclient.guilds.get(serverID);
+    for(let rol of roles) {
+        if(sv.members.get(userDSID)?.roles.has(rol)) return true;
+    } return false;
 }

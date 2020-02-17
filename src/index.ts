@@ -20,6 +20,13 @@ let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 dsclient.on("ready", () => { 
     console.log("Ready to go!!!");
     firebase.auth().signInWithEmailAndPassword(db.user, db.pass).then(() => { console.log('BOT DB Connected') }).catch(Err => { console.log(Err); });
+
+
+   /* Mee6LevelsApi.getLeaderboardPage(serverID).then((leaderboard: any) => {
+        console.log(`${leaderboard.length} members ranked on the leaderboard.`);
+        console.log(leaderboard)
+    }); */
+
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414');
@@ -42,3 +49,14 @@ dsclient.on("presenceUpdate", (oldMember, newMember) => {
 });
 
 dsclient.login(config.token);
+
+/*  {
+    id: '637746217492807680',
+    level: 6,
+    username: 'xLukaaL2',
+    discriminator: '4754',
+    avatarUrl: 'https://cdn.discordapp.com/avatars/637746217492807680/d613038af4971c886e5fdd85f37e7df1?size=2048',
+    tag: 'xLukaaL2#4754',
+    xp: { userXp: 157, levelXp: 580, totalXp: 1782 },
+    rank: 89
+  } */
