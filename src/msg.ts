@@ -105,14 +105,17 @@ export class MSGshux {
                     msg.reply('Su rol fue actualizado');
                 } else { msg.reply('Su rol es correcto'); }
             }
-        } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) {
+        } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
             if(msg.content.startsWith('shux!ayuda') || msg.content.startsWith('shux!consulta') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
                 console.log('puede entrar')
             } else if(msg.content.startsWith('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
                 console.log('puede entrar')
             } if(msg.content.startsWith('shux!entrevista') || isUserEnable(channelsTC.entrevista.roles, msg.author.id)) {
                 console.log('puede entrar')
-            }else { msg.delete(); }
+            }else { 
+                msg.delete();
+                msg.author.send('Para publicar un mensaje en <#674045015084761127> | <#673212666210287657> | <#674408701125459968>\n Haga click en este enlace para leer los comandos de SHUX -> https://discordapp.com/channels/392414185633611776/674086159697313833/678965114656784394')
+            }
         }
     }
 }
