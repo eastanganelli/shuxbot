@@ -84,14 +84,13 @@ export class MSGshux {
                     let embed_: Discord.RichEmbed = new Discord.RichEmbed();
                     embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: ', String(miPerfil.birth), false)
                     .addField('Mi PC: ', miPerfil.urlbuild, false)
-                    .addField('Warnings: ', miPerfil.report, false)
-                    .addField('Expulsiones: ', miPerfil.expulsiones, false)
+                    .addField('Warnings: ', miPerfil.warns, false)
                     .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
                     msg.channel.send(embed_);
                 }).catch(() => {
                     msg.reply('NO tenes un perfil creado')
                 });
-            } if(msg.content.toLocaleLowerCase().includes('shux!mivoto')) {
+            } else if(msg.content.toLocaleLowerCase().includes('shux!mivoto')) {
                 //#region vars
                     let user_ = new User(this.dsClient);
                     let menUser = msg.mentions.users.first();
@@ -99,22 +98,49 @@ export class MSGshux {
                 //#endregion
 
                 user_.setVoto(msg.author.id, msg.mentions.users.first().id);
-            } if(msg.content.toLocaleLowerCase().includes('shux!translevel')) {
-                const usuario = new User(this.dsClient);
-                if(usuario.asignarlvls(msg.author.id)) {
-                    msg.reply('Su rol fue actualizado');
-                } else { msg.reply('Su rol es correcto'); }
             }
         } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
-            if(msg.content.startsWith('shux!ayuda') || msg.content.startsWith('shux!consulta') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
-                console.log('puede entrar')
-            } else if(msg.content.startsWith('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
-                console.log('puede entrar')
-            } else if(msg.content.startsWith('shux!entrevista') || isUserEnable(channelsTC.entrevista.roles, msg.author.id)) {
-                console.log('puede entrar')
+            if(msg.content.toLowerCase().includes('shux!ayuda') || msg.content.toLowerCase().includes('shux!consulta') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+                return;
+            } else if(msg.content.toLowerCase().includes('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
+                return;
+            } else if(msg.content.toLowerCase().includes('shux!entrevista') || isUserEnable(channelsTC.entrevista.roles, msg.author.id)) {
+                return;
             } else { 
                 msg.delete();
                 msg.author.send('Para publicar un mensaje en <#674045015084761127> | <#673212666210287657> | <#674408701125459968>\n Haga click en este enlace para leer los comandos de SHUX -> https://discordapp.com/channels/392414185633611776/674086159697313833/678965114656784394')
+            }
+        } if(isUserEnable(channelsTC.warnings.roles, msg.author.id)) {
+            if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {
+                const usuario = new User(this.dsClient);
+                let menUser = msg.mentions.users.first();
+                if(menUser.username != undefined || menUser.id != undefined) {
+                    const razon = msg.content.split('-');
+                    {
+                        usuario.updateWarn(menUser.id, '+');
+                        menUser.send('**FUE WARNEADO**\nMotivo de reporte: '+razon[razon.length-1]+'\nPara más info contactarse con Moderadores en <#501500942122745880>\nSHUX');
+                    }
+                    {
+                        const ShuxSev: Discord.TextChannel|any = this.dsClient.guilds.find('id', serverID).channels.find('id', channelsTC.warnings.idTC);
+                        ShuxSev.send('**WARNING A <@' + menUser.id + '>** por <@' + msg.author.id + '>\n__Razón/Prueba__: ' + razon[razon.length-1]);
+                    }
+                }
+            } else if(msg.content.toLocaleLowerCase().startsWith('shux!rmwarn') && msg.content.toLocaleLowerCase().includes('-')) {
+                const usuario = new User(this.dsClient);
+                let menUser = msg.mentions.users.first();
+                if(menUser.username != undefined || menUser.id != undefined) {
+                    const razon = msg.content.split('-');
+                    {
+                        msg.delete();
+                        usuario.updateWarn(menUser.id, '-');
+                        menUser.send('**SU WARN FUE REMOVIDO** por <@'+msg.author.id+'>\nSHUX');
+                    }
+                    {
+                        const ShuxSev: Discord.TextChannel|any = this.dsClient.guilds.find('id', serverID).channels.find('id', channelsTC.warnings.idTC);
+                        ShuxSev.fetchMessage(razon[razon.length-2]).then((msg: any) => { msg.delete(); })
+                        ShuxSev.send('**REMOVE WARNING DE <@' + menUser.id + '>** por <@' + msg.author.id + '>\n__Razón/Prueba__: ' + razon[razon.length-1]);
+                    }
+                }
             }
         }
     }

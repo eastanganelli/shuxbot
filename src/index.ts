@@ -4,11 +4,12 @@ import * as Discord from "discord.js";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
-import { config, firebaseConfig, db, serverID } from "./config";
+import { config, firebaseConfig } from "./config";
 //#endregion
 //#region Class
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
+import { IniBOT } from "./ini";
 //#endregion
 //#endregion
 
@@ -18,15 +19,7 @@ export const dsclient: Discord.Client = new Discord.Client();
 let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 
 dsclient.on("ready", () => { 
-    console.log("Ready to go!!!");
-    firebase.auth().signInWithEmailAndPassword(db.user, db.pass).then(() => { console.log('BOT DB Connected') }).catch(Err => { console.log(Err); });
-
-
-   /* Mee6LevelsApi.getLeaderboardPage(serverID).then((leaderboard: any) => {
-        console.log(`${leaderboard.length} members ranked on the leaderboard.`);
-        console.log(leaderboard)
-    }); */
-
+    const iniServicios = new IniBOT(dsclient);
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414');
