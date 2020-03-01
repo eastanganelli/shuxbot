@@ -17,7 +17,12 @@ export const db = {
 };
 export const TESTMode: boolean = false;
 export const serverID = '392414185633611776';
+export const serverState = '683497971836256276';
 export const channelsTC = {
+    'shuxestado': {
+        idTC: '683095482012008500',
+        roles: ['674088910024081441']
+    },
     'warnings': {
         idTC: '675344555511382040',
         roles: ['457666332402647041', '474020722235146250', '673222890673668156', '510572522366959647']
