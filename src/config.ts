@@ -15,7 +15,7 @@ export const db = {
     user: 'shuxbot@discord.bot.io',
     pass: 'BJM&83TqEe5E&BwzfsUejPdGsGhM$a'
 };
-export const TESTMode: boolean = false;
+export const TESTMode: boolean = true;
 export const serverID = '392414185633611776';
 export const serverState = '683497971836256276';
 export const channelsTC = {
@@ -34,7 +34,10 @@ export const channelsTC = {
         roles: ['457666332402647041', '474020722235146250', '673222890673668156', '510572522366959647']
     }, 'consulta': {
         idTC: '674045015084761127',
-        roles: ['457666332402647041', '474020722235146250', '673222890673668156', '510572522366959647', '683438860750815345', '674397839098642433']
+        roles: ['683438860750815345', '674397839098642433', '683437732173053975']
+    }, 'tecnicos': {
+        idTC: '680223692076089355',
+        roles: ['683438860750815345', '674397839098642433', '683437732173053975']
     }, 'dev': {
         idTC: '675061892863098890',
         roles: ['457666332402647041', '673222890673668156', '674080985733791754']

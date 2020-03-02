@@ -39,7 +39,6 @@ export class User {
                     }
                 }
             });
-            
         }
         eleccionesWinners() {
             const elecFB = firebase.database().ref('/elecciones');
@@ -56,43 +55,6 @@ export class User {
         }
         ponsacMonthRol(votos: Array<electos>) {
             //let ;
-        }
-        asignarlvls(dsID: string|any) {
-            let LVLs: Array<{ minLvl: number; maxLvl: number; roleLVL: string }> = [
-                { minLvl: 0,  maxLvl: 5,   roleLVL: '674086387510673414' },
-                { minLvl: 5,  maxLvl: 10,  roleLVL: '675185452931874836' },
-                { minLvl: 10, maxLvl: 15,  roleLVL: '675185597589225502' },
-                { minLvl: 15, maxLvl: 20,  roleLVL: '675185648466133052' },
-                { minLvl: 20, maxLvl: 25,  roleLVL: '675185689872039946' },
-                { minLvl: 25, maxLvl: 30,  roleLVL: '675185738815373312' },
-                { minLvl: 30, maxLvl: 35,  roleLVL: '675185783673454622' },
-                { minLvl: 35, maxLvl: 40,  roleLVL: '675185839772270612' },
-                { minLvl: 40, maxLvl: 500, roleLVL: '675185892276699141' },
-            ];
-        
-            const SHUX: any|Discord.Guild = this.dsclient.guilds.get(serverID);
-            const shuxMEM: Discord.GuildMember = SHUX.members.get(dsID);
-        
-            {
-                for(let i = 1; i < LVLs.length; i++) {
-                    if(shuxMEM.roles.has(LVLs[i].roleLVL)) { 
-                        if(shuxMEM.roles.has(LVLs[0].roleLVL)) { shuxMEM.removeRole(LVLs[i].roleLVL); }
-                        return false; 
-                    }
-                }
-                shuxMEM.addRole(LVLs[0].roleLVL);
-            }
-        
-            Mee6LevelsApi.getUserXp(serverID, dsID).then((meeUser: any) => {
-                const kValue: number = 1000;
-                for(let i = 0; i < LVLs.length; i++) {
-                    if(meeUser.level>=LVLs[i].minLvl && meeUser.level<LVLs[i].maxLvl) { 
-                        shuxMEM.addRole(LVLs[i].roleLVL);
-                        firebase.database().ref('/users').child(dsID).update({ points: (meeUser.level)*kValue })
-                        return true;
-                    }
-                } console.log(`${meeUser.tag} is at level ${meeUser.level} and rank ${meeUser.rank}.`);
-            }).catch(() => {});
         }
     //#endregion
     //#region DB
@@ -159,6 +121,12 @@ export class User {
                     }
                     firebase.database().ref('/users').child(uid).update({ warns: sum }); 
                 }
+            }).catch(() => {});
+        }
+        updatePoints(uid: string, points_: number) {
+            this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
+                let sum = miPerfil.points + points_;
+                firebase.database().ref('/users').child(uid).update({ points: sum }); 
             }).catch(() => {});
         }
         //#endregion

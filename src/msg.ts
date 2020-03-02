@@ -5,6 +5,7 @@ import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 
 export class MSGshux {
+    oneday: number = 24*60*60*1000;
     constructor(private dsClient: Discord.Client) {
         
     }
@@ -100,7 +101,20 @@ export class MSGshux {
                 user_.setVoto(msg.author.id, msg.mentions.users.first().id);
             }
         } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
-            if(msg.content.toLowerCase().includes('shux!ayuda') || msg.content.toLowerCase().includes('shux!consulta') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+            if(msg.content.toLowerCase().startsWith('shux!ayuda') || msg.content.toLowerCase().startsWith('shux!consulta')
+                || msg.content.toLowerCase().startsWith('shux!finconsulta')|| msg.content.toLowerCase().startsWith('shux!finayuda') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+                if((msg.content.toLowerCase().startsWith('shux!finconsulta')|| msg.content.toLowerCase().startsWith('shux!finayuda')) && isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+                    const usuario = new User(this.dsClient);
+                    let menUser = msg.mentions.users.first();
+                    await menUser.send('Su ticket de **Consulta / Ayuda** en <#'+channelsTC.consulta.idTC+'> fue cerrado.\nCalifique del 1 al 10 como fue... *Tiene 24hs (1 Día) para calificar*');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: this.oneday, errors: ['TIME'] }).then(async (collected: any) => {
+                        usuario.updatePoints(menUser.id, 100);
+                        msg.author.send('Muchas gracias por calificar.\nHa recibido 100pts.\nSaludos, <@673655111041548288>').then(() => {
+                            const tecnicos: Discord.TextChannel|any = this.dsClient.guilds.find('id', serverID).channels.find('id', channelsTC.tecnicos.idTC);
+                            tecnicos.send('El usuario <@'+menUser.id+'> califico la **CONSULTA / AYDUA**\n**'+collected.first().content+'/10**');
+                        });
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!'); });
+                }
                 return;
             } else if(msg.content.toLowerCase().includes('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
                 return;

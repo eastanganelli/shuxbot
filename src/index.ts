@@ -4,7 +4,7 @@ import * as Discord from "discord.js";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
-import { config, firebaseConfig } from "./config";
+import { config, firebaseConfig, serverID } from "./config";
 //#endregion
 //#region Class
 /* import { DBshux } from "./dbshux"; */
@@ -13,13 +13,11 @@ import { IniBOT } from "./ini";
 //#endregion
 //#endregion
 
-const Mee6LevelsApi = require("mee6-levels-api");
-
 export const dsclient: Discord.Client = new Discord.Client();
 let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 
 dsclient.on("ready", () => { 
-    const iniServicios = new IniBOT(dsclient);
+    new IniBOT(dsclient);
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414');
