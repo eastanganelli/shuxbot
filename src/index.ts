@@ -10,6 +10,7 @@ import { config, firebaseConfig, serverID } from "./config";
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
 import { IniBOT } from "./ini";
+import { User } from "./user";
 //#endregion
 //#endregion
 
@@ -20,14 +21,13 @@ dsclient.on("ready", () => {
     new IniBOT(dsclient);
 });
 dsclient.on("guildMemberAdd", member => { 
-    member.addRole('674086387510673414');
+    member.addRole('674086387510673414').then(() => { (new User(dsclient)).setPerfil(member.id); });
 });
 dsclient.on('guildMemberRemove', member => {
     
 });
 dsclient.on("message", msg => {
-    let msg_ = new MSGshux(dsclient);
-    msg_.getMSG(msg);
+    (new MSGshux(dsclient)).getMSG(msg);
 });
 dsclient.on('messageReactionAdd', async (reaction, user) => {  });
 dsclient.on('messageReactionRemove', async (reaction, user) => {  });

@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID, channelsTC } from "./config";
+import { serverID, channelsTC, listaErr } from "./config";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 
@@ -97,13 +97,13 @@ export class MSGshux {
                     let menUser = msg.mentions.users.first();
                     console.log(menUser.username)
                 //#endregion
-
-                user_.setVoto(msg.author.id, msg.mentions.users.first().id);
+                if(msg.author.id!=menUser.id) {
+                    user_.setVoto(msg.author.id, msg.mentions.users.first().id).then((res: any) => { msg.reply(res); }).catch((err) => { msg.reply(err); });
+                } else { msg.reply(listaErr.votoMe.info); }
             }
         } if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
-            if(msg.content.toLowerCase().startsWith('shux!ayuda') || msg.content.toLowerCase().startsWith('shux!consulta')
-                || msg.content.toLowerCase().startsWith('shux!finconsulta')|| msg.content.toLowerCase().startsWith('shux!finayuda') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
-                if((msg.content.toLowerCase().startsWith('shux!finconsulta')|| msg.content.toLowerCase().startsWith('shux!finayuda')) && isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+            if(msg.content.toLowerCase().startsWith('shux!finticket') || msg.content.toLowerCase().startsWith('shux!finticket') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
+                if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
                     const usuario = new User(this.dsClient);
                     let menUser = msg.mentions.users.first();
                     await menUser.send('Su ticket de **Consulta / Ayuda** en <#'+channelsTC.consulta.idTC+'> fue cerrado.\nCalifique del 1 al 10 como fue... *Tiene 24hs (1 Día) para calificar*');

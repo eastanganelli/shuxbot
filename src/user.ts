@@ -4,37 +4,27 @@ import * as Discord    from "discord.js";
 import * as firebase   from "firebase/app";
 import "firebase/database";
 //#endregion
-import { serverID } from "./config";
+import { serverID, listaErr, listaPass, channelsTC, LVLs } from "./config";
 import { electos } from "./interfaces/elecciones";
-import { fbuser, dbmee6 } from "./interfaces/users";
+import { fbuser } from "./interfaces/users";
+import { dsclient } from ".";
 //#endregion
 const Mee6LevelsApi = require("mee6-levels-api");
 
 export class User {
-    LVLs: Array<{ minLvl: number; maxLvl: number; roleLVL: string }> = [
-        { minLvl: 0,  maxLvl: 5,   roleLVL: '674086387510673414' },
-        { minLvl: 5,  maxLvl: 10,  roleLVL: '675185452931874836' },
-        { minLvl: 10, maxLvl: 15,  roleLVL: '675185597589225502' },
-        { minLvl: 15, maxLvl: 20,  roleLVL: '675185648466133052' },
-        { minLvl: 20, maxLvl: 25,  roleLVL: '675185689872039946' },
-        { minLvl: 25, maxLvl: 30,  roleLVL: '675185738815373312' },
-        { minLvl: 30, maxLvl: 35,  roleLVL: '675185783673454622' },
-        { minLvl: 35, maxLvl: 40,  roleLVL: '675185839772270612' },
-        { minLvl: 40, maxLvl: 500, roleLVL: '675185892276699141' },
-    ];
 
     constructor(private dsclient: Discord.Client) {  }
 
     //#region User FNs
         lvlUP(uid: string) {
             this.getMyProfile(uid).then((myPoints: number|any) => {
-                for(let i = 0; i < this.LVLs.length; i++) {
-                    if(myPoints>=((this.LVLs[i].minLvl)*1000) && myPoints<((this.LVLs[i].maxLvl)*1000)) {
+                for(let i = 0; i < LVLs.length; i++) {
+                    if(myPoints>=((LVLs[i].minLvl)*1000) && myPoints<((LVLs[i].maxLvl)*1000)) {
                         const myServer: Discord.Guild|any = this.dsclient.guilds.get(serverID);
                         const User_: Discord.GuildMember = myServer.fetchMember(uid);
-                        if(!(User_.roles.has(String(this.LVLs[i].roleLVL)))) {
-                            User_.addRole(String(this.LVLs[i].roleLVL));
-                            if(User_.roles.has(String(this.LVLs[i-1].roleLVL))) User_.removeRole(String(this.LVLs[i].roleLVL));
+                        if(!(User_.roles.has(String(LVLs[i].roleLVL)))) {
+                            User_.addRole(String(LVLs[i].roleLVL));
+                            if(User_.roles.has(String(LVLs[i-1].roleLVL))) User_.removeRole(String(LVLs[i].roleLVL));
                         }
                     }
                 }
@@ -55,6 +45,28 @@ export class User {
         }
         ponsacMonthRol(votos: Array<electos>) {
             //let ;
+        }
+        listaTopUsers(): Array<Array<any>> {
+            let ListaUsers: Array<Array<any>> = []
+            const shuxRoles: Discord.Guild|any = dsclient.guilds.find('id', serverID);
+            for(let i = (LVLs.length-7); i < LVLs.length; i++) {
+                const rolAux:Discord.Role = shuxRoles.roles.find('id', LVLs[i].roleLVL);
+                ListaUsers.push(rolAux.members.array());
+            }  
+            //this.searchDeletedUser(ListaUsers);
+            return ListaUsers;
+        }
+        searchDeletedUser(users: Array<Array<string>>) {
+            const shuxuser: Discord.Guild|any = this.dsclient.guilds.find('id', serverID);
+            for(let i=0; i<users.length; i++){
+                if(users[i].length>0) {
+                    for(let j=0; j<users[i].length; j++) {
+                        const me: Discord.GuildMember = shuxuser.member(String(users[i][j]));
+                        console.log(me)
+                        if(!me) { console.log('No esta en el server'); }
+                    }
+                }
+            }
         }
     //#endregion
     //#region DB
@@ -84,21 +96,47 @@ export class User {
                 });
             }
             setVoto(uidVoter: string, uidElector: string) {
-                const eleccionesFB = firebase.database().ref('/elecciones').child(uidElector);
-                let votantes: Array<string> = new Array(0);
-                eleccionesFB.once('value', snapshot => {
-                    snapshot.forEach(item => {
-                        votantes.push(item.val());
-                    }); votantes.push(uidVoter);
-                    eleccionesFB.update(votantes);
-                }).catch(() => {
-                    votantes.push(uidVoter);
-                    eleccionesFB.set(votantes);
+                return new Promise((resolve, reject) => {
+                    if(isUserEnable(channelsTC.ciervos.roles, uidElector)) {
+                        const eleccionesFB = firebase.database().ref('/elecciones/staff');
+                        this.votoNoRep(uidVoter, eleccionesFB).then((res) => {
+                            if(res==true) { this.votoFn(uidVoter, (eleccionesFB.child(uidElector))).then((res: any) => { resolve(res); }); }
+                        }).catch((err) => { reject(err) });
+                    } else {
+                        const eleccionesFB = firebase.database().ref('/elecciones/user');
+                        this.votoNoRep(uidVoter, eleccionesFB).then((res) => {
+                            if(res==true) { this.votoFn(uidVoter, (eleccionesFB.child(uidElector))).then((res: any) => { resolve(res); }); }
+                        }).catch((err) => { reject(err); });
+                    }
                 });
             }
-            setWarn(uid: string) {
-                firebase.database().ref('/users').child(uid).update({ warns: 1 });
-            }
+            //#region VOTO
+                votoFn(uidVoter: string, eleccionesFB: any) {
+                    return new Promise((resolve, reject) => {
+                        let votantes: Array<string> = new Array(0);
+                        eleccionesFB.once('value', (snapshot: any) => {
+                            snapshot.forEach((item: any) => { votantes.push(item.val()); }); 
+                            votantes.push(uidVoter);
+                            if(votantes.length == 1) { eleccionesFB.set(votantes).then(() => { resolve(listaPass.voto.info); }); }
+                            else { eleccionesFB.update(votantes).then(() => { resolve(listaPass.voto.info); }); }
+                        }).catch((err: any) => { console.log(err); });
+                    });
+                }
+                votoNoRep(uidVoter: string, electos: any) {
+                    return new Promise((resolve, reject) => {
+                        electos.once('value', (snapshot: any) => {
+                            let contador = 0;
+                            snapshot.forEach((snap: any) => {
+                                snap.forEach((item: any) => { if(item.val() == uidVoter) contador++; }); 
+                            });
+                            if(contador>=3) { reject(listaErr.votoMulti.info); }
+                            else if(contador>0 && contador<3) { reject(listaErr.votoRep.info); }
+                            resolve(true)
+                        });
+                    });
+                }
+            //#endregion
+            setWarn(uid: string) { firebase.database().ref('/users').child(uid).update({ warns: 1 }); }
         //#endregion
         //#region UPDATE
         updateWarn(uid: string, addrm: string) {
@@ -131,7 +169,15 @@ export class User {
         }
         //#endregion
         //#region DELETE
-
+            deleteProfile(dsid: string) {
+                firebase.database().ref('/users').child(dsid).remove();
+            }
         //#endregion
     //#endregion
+}
+function isUserEnable(roles: Array<string>, userDSID: string): boolean {
+    const sv: Discord.Guild|any = dsclient.guilds.get(serverID);
+    for(let rol of roles) {
+        if(sv.members.get(userDSID)?.roles.has(rol)) return true;
+    } return false;
 }
