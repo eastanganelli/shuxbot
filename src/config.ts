@@ -15,7 +15,7 @@ export const db = {
     user: 'shuxbot@discord.bot.io',
     pass: 'BJM&83TqEe5E&BwzfsUejPdGsGhM$a'
 };
-export const TESTMode: boolean = false;
+export const TESTMode: boolean = true;
 export const serverID = '392414185633611776';
 export const channelsTC = {
     'shuxestado': {
@@ -43,7 +43,12 @@ export const channelsTC = {
     }, 'ciervos': {
         idTC: '676117952461930499',
         roles: ['675075371481169922']
-    } 
+    }, 'vicioroom': {
+        idTC: '552980788539424779',
+        category: '552537250718547999',
+        vicioVC: '552543499212554242',
+        roles: ['457666332402647041', '474020722235146250', '673222890673668156', '510572522366959647', '470069464180981761', '675185892276699141', '675185839772270612', '675185783673454622', '675185738815373312', '675185689872039946', '675185648466133052', '675185597589225502']
+    }, 
 };
 export const listaErr = {
     'votoRep': {

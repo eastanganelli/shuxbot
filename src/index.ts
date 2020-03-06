@@ -11,6 +11,7 @@ import { config, firebaseConfig, serverID } from "./config";
 import { MSGshux } from "./msg";
 import { IniBOT } from "./ini";
 import { User } from "./user";
+import { Juegos } from "./juegos";
 //#endregion
 //#endregion
 
@@ -31,7 +32,9 @@ dsclient.on("message", msg => {
 });
 dsclient.on('messageReactionAdd', async (reaction, user) => {  });
 dsclient.on('messageReactionRemove', async (reaction, user) => {  });
-dsclient.on('voiceStateUpdate', (oldMember, newMember) => { });
+dsclient.on('voiceStateUpdate', (oldMember, newMember) => { 
+    (new Juegos(dsclient)).autoDelteChannel();
+});
 dsclient.on("presenceUpdate", (oldMember, newMember) => {
     if(oldMember.presence.status !== newMember.presence.status) {
         //console.log(newMember.user.username + ' is now ' + newMember.presence.status); 
