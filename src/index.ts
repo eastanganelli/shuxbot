@@ -9,7 +9,7 @@ import { config, firebaseConfig, serverID } from "./config";
 //#region Class
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
-import { IniBOT } from "./ini";
+import { IniBOT, intervals } from "./ini";
 import { User } from "./user";
 import { Juegos } from "./juegos";
 //#endregion
@@ -19,7 +19,8 @@ export const dsclient: Discord.Client = new Discord.Client();
 let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 
 dsclient.on("ready", () => { 
-    new IniBOT(dsclient);
+    (new IniBOT(dsclient)).iniLoading();
+    intervals(dsclient);
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414').then(() => { (new User(dsclient)).setPerfil(member.id); });

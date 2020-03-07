@@ -2,7 +2,9 @@ export interface fbuser {
     points: number;
     birth: string;
     warns: number;
-    urlbuild: string
+    urlbuild: string;
+    customRole: string;
+    customChat: string;
 }
 export interface fbvotaciones {
     dsIDs: Array<string|number>

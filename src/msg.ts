@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID, channelsTC, listaErr } from "./config";
+import { serverID, channelsTC, listaErr, LVLs } from "./config";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 import { Juegos } from "./juegos";
@@ -43,39 +43,44 @@ export class MSGshux {
                 } case 'shux!report':{
                 
                     break;
-                } case 'shux!propuesta':{
-                    await msg.author.send('Por favor ingrese su segurencia / idea\nSi desea cancelar -> #cancelar');
+                } case 'shux!mirol': {    
+                    let datos_: Array<string> = new Array(0);  
+                    await msg.author.send('Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
-                        this.dsClient.channels.forEach((c: Discord.Channel) => {
-                            if(c.id == '673212666210287657') {
-                                const server_: any = this.dsClient.guilds.get(serverID);
-                                server_.channels.get('673212666210287657').send('**SUGERENCIA POR <@'+msg.author.id+'>**\n'+collected.first().content);
-                                msg.author.send('Mensaje enviado\nEspere su respuesta en <#673212666210287657>');
-                            }
-                        });
+                        datos_.push(collected.first().content);
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    break;
-                } case 'shux!entrevista':{
-                    await msg.author.send(`**FORMATO DE FORMULARIO PARA CONSULTOR (#💻consultas:@Consultor) / SHUXTESTER: (#devtest : @SHUXTESTER)**\n------------------------------------------------------------------------------------------------------------------------------------------------------\nPARA QUE ROL?\nPOR QUE QUERES SERLO?\nEXPERIENCIA?\nPOR QUE DEBEMOS ELEGIRTE?\n--------------------------------------------------------------------------------------------------------------------------------------------------------`);
-                    await msg.author.send('Por favor, responda con el formato del formulario, en un solo msj.\nSi desea cancelar -> #cancelar\nComplete el formulario a continuacion, al terminar **presione Enter**');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
-                        if(collected.first().content == '#cancelar') {
-                            msg.author.send('Ha sido cancelada');
-                        } else {
-                            this.dsClient.channels.forEach((c: Discord.Channel) => {
-                                if(c.id == '674408701125459968') {
-                                    const server_: any = this.dsClient.guilds.get('392414185633611776');
-                                    server_.channels.get('674408701125459968').send('<@'+msg.author.id+'>\n'+collected.first().content);
-                                    msg.author.send('Mensaje enviado\nEspere su respuesta en <#674408701125459968>\n**:white_check_mark: ACEPTADO - :x: RECHAZADO - :loudspeaker: REVISION - :speech_balloon: VA A PRUEBA**\n*Puede haber preguntas o plantear un problema y tener que resolverlo*');
-                                }
-                            });
-                        }
+                    await msg.author.send('Por favor, ingresar el color (**Formato #COLOR** -> usar ColorPicker en Google)');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
+                        datos_.push(collected.first().content);
                     }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    break;
-                } default:
-                    break;
+                    await msg.author.send('Su ROL ya fue creado!!\nSaludos, SHUX');
+                    let roles_: Array<string> = new Array(0);
+                    for(let i=LVLs.length-5; i<LVLs.length; i++) { roles_.push(LVLs[i].roleLVL); }
+                    if(isUserEnable(roles_, msg.author.id)) {
+                        const newRole = new User(this.dsClient);
+                        console.log(datos_)
+                        newRole.createRole(msg.author.id, datos_[0], datos_[1]);
+                    } break;
+                } case 'shux!micanal': {    
+                    let datos_: Array<string> = new Array(0);  
+                    await msg.author.send('Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
+                        datos_.push(collected.first().content);
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
+                    await msg.author.send('Por favor, el color (Recuerde ingresar un color en formato COLOR sin #, puede usar ColorPicker en Google)');
+                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
+                        datos_.push(collected.first().content);
+                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
+                    await msg.author.send('Su ROL ya fue creado!!\nSaludos, SHUX');
+                    let roles_: Array<string> = new Array(0);
+                    for(let i=LVLs.length-5; i<LVLs.length; i++) { roles_.push(LVLs[i].roleLVL); }
+                    if(isUserEnable(roles_, msg.author.id)) {
+                        const newRole = new User(this.dsClient);
+                        console.log(datos_)
+                        newRole.createRole(msg.author.id, datos_[0], datos_[1]);
+                    } break;
+                } default: break;
             }
-
         }
     }
     async pubSYS(msg: Discord.Message) {
@@ -106,8 +111,7 @@ export class MSGshux {
             } else if(msg.channel.id == channelsTC.vicioroom.idTC && msg.content.toLowerCase().startsWith('shux!vcgame') && isUserEnable(channelsTC.vicioroom.roles, msg.author.id)) {
                 const TCNombre: string = msg.content.substring(('shux!vcgame ').length,);
                 (new Juegos(this.dsClient)).creategameChannel(TCNombre, msg.author.username);
-            }
-            
+            }            
             if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
                 if(msg.content.toLowerCase().startsWith('shux!ticket') || msg.content.toLowerCase().startsWith('shux!finticket') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
                     if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.consulta.roles, msg.author.id)) {

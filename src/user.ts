@@ -68,6 +68,20 @@ export class User {
                 }
             }
         }
+        createRole(clientID: string, name_: string, color_: string) {
+            this.getMyProfile(clientID).then((miPerfil: fbuser|any) => {
+                console.log(miPerfil.customRole)
+                if(miPerfil.customRole!='' || miPerfil.customRole==undefined || miPerfil.customRole==NaN) {
+                    const shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
+                    shuxServe.createRole({ name: name_, color: color_ }).then(async(role_) => {
+                        await role_.setPosition(17);
+                        await shuxServe.member(clientID).addRole(role_.id);
+                        await this.updateRole(clientID, role_.id);
+                    });
+                }
+            }).catch(() => {});
+            
+        }
     //#endregion
     //#region DB
         //#region GET
@@ -139,10 +153,13 @@ export class User {
             setWarn(uid: string) { firebase.database().ref('/users').child(uid).update({ warns: 1 }); }
         //#endregion
         //#region UPDATE
+        updateRole(uid: string, flag: string) {
+            firebase.database().ref('/users').child(uid).update({ customRole: flag }).catch((err: any) => console.log(err));
+        }
         updateWarn(uid: string, addrm: string) {
             this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
                 console.log(miPerfil.warns);
-                if((miPerfil.warns == 0 || miPerfil.warns == undefined || miPerfil.warns == NaN) && (addrm != '-')) {
+                if((miPerfil.warns==0 || miPerfil.warns==undefined || miPerfil.warns==NaN) && (addrm != '-')) {
                     this.setWarn(uid);
                     return;
                 }

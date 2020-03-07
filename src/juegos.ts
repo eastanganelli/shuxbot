@@ -9,10 +9,12 @@ export class Juegos {
 		const shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
 		firebase.database().ref('/dynamicVTC').child('viciogame').once('value', snapshot => {
 			snapshot.forEach(snap => {
-				const shuxchannel: any|Discord.VoiceChannel = shuxServe.channels.find('id', snap.val().vcid);
-				if ((shuxchannel.members.keyArray()).length<=0 || shuxchannel.members==null) {
-					shuxchannel.delete();
-					firebase.database().ref('/dynamicVTC').child('viciogame').child(String(snap.key)).remove();
+				if(snap.exists()) {
+					const shuxchannel: any|Discord.VoiceChannel = shuxServe.channels.find('id', snap.val().vcid);
+					if ((shuxchannel.members.keyArray()).length<=0 || shuxchannel.members==null) {
+						shuxchannel.delete();
+						firebase.database().ref('/dynamicVTC').child('viciogame').child(String(snap.key)).remove();
+					}
 				}
 			})
 		})
