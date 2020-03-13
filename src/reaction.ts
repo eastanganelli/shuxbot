@@ -38,8 +38,8 @@ export class Reacciones {
 			await collector.on('collect', async (reaction: Discord.MessageReaction, reactionCollector: Discord.ReactionCollector) => {
 				//await console.log(reaction.users);
 				const nowUser: any|Discord.GuildMember = reaction.users.last();
-				if(!(nowUser.user.bot)) {
-					console.log(nowUser.username)
+				if(!(nowUser.id == '673655111041548288')) {
+					//console.log(nowUser.username)
 					switch(reaction.emoji.name) {
 						case "🎟️": {
 							const newTicket = new TicketSup(this.dsclient);

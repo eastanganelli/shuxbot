@@ -11,6 +11,7 @@ export class IniBOT {
 
 	constructor(private dsclient: Discord.Client) {  }
 	iniLoading() {
+		//this.agregarReaccionesAmsgs();
 		console.log('>>LOADING BOT...');
 		if(TESTMode) {
 			const ShuxDevTC: Discord.TextChannel|any = this.shuxServe.channels.find('id', channelsTC.shuxestado.idTC);
