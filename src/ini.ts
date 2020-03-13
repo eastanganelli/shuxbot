@@ -7,11 +7,13 @@ import { User } from "./user";
 import { Juegos } from "./juegos";
 
 export class IniBOT {
+	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
+
 	constructor(private dsclient: Discord.Client) {  }
 	iniLoading() {
 		console.log('>>LOADING BOT...');
 		if(TESTMode) {
-			const ShuxDevTC: Discord.TextChannel|any = this.dsclient.guilds.find('id', serverID).channels.find('id', channelsTC.shuxestado.idTC);
+			const ShuxDevTC: Discord.TextChannel|any = this.shuxServe.channels.find('id', channelsTC.shuxestado.idTC);
 			ShuxDevTC.fetchMessage(String(channelsTC.shuxestado.msg[0])).then(async(estadoMSG: any) => {
 				let ESTADO: Array<string> = new Array(0);
 				await estadoMSG.edit('>>**INICIANDO SERVICIOS** - ');
@@ -32,7 +34,7 @@ export class IniBOT {
 				await estadoMSG.edit(ESTADO);
 			});
 		} else {
-			const ShuxDevTC: Discord.TextChannel|any = this.dsclient.guilds.find('id', serverID).channels.find('id', channelsTC.shuxestado.idTC);
+			const ShuxDevTC: Discord.TextChannel|any = this.shuxServe.channels.find('id', channelsTC.shuxestado.idTC);
 			ShuxDevTC.fetchMessage(channelsTC.shuxestado.msg[0]).then(async(estadoMSG: any) => {
 				await estadoMSG.edit('>>**INICIANDO SERVICIOS**');
 				await firebase.auth().signInWithEmailAndPassword(db.user, db.pass).catch((Err) => { 
@@ -46,7 +48,7 @@ export class IniBOT {
 	botDataRefresh() {
 		const usrRanking: Array<Array<any>> = (new User(this.dsclient)).listaTopUsers();
 		const lvls: Array<string> = ['LVL 10', 'LVL 15', 'LVL 20','LVL 25', 'LVL 30','LVL 35', 'LVL 40'];
-		const msgRank: Discord.TextChannel|any = this.dsclient.guilds.find('id', serverID).channels.find('id', channelsTC.shuxestado.idTC);
+		const msgRank: Discord.TextChannel|any = this.shuxServe.channels.find('id', channelsTC.shuxestado.idTC);
 		msgRank.fetchMessage(channelsTC.shuxestado.msg[channelsTC.shuxestado.msg.length-1]).then(async(rankMSg: any) => { 
 			let msg: Discord.RichEmbed = new Discord.RichEmbed();
 			msg.setTitle('**RANKING**').setDescription('se actualiza cada 4 min').setColor('0xFFD700');
@@ -58,6 +60,12 @@ export class IniBOT {
 				msg.addField(lvls[i], values_, false);
 			} await rankMSg.edit(msg);
 		});
+	}
+	agregarReaccionesAmsgs() {
+		const msgToReact: Discord.TextChannel|any = this.shuxServe.channels.find('id', '');
+		msgToReact.fetchMessage('').then(async (msg: Discord.Message) => {
+			await msg.react("");
+		})
 	}
 }
 export function intervals(dsclient: Discord.Client) {

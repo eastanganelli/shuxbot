@@ -35,10 +35,7 @@ dsclient.on("message", msg => {
     (new MSGshux(dsclient)).getMSG(msg);
 });
 dsclient.on('messageReactionAdd', (reaction, user) => {
-    if(reaction.message.id == '687091414676537375') {
-        console.log(reaction.emoji.name)
-    }
-    
+        
 });
 dsclient.on('messageReactionRemove', async (reaction, user) => {
 

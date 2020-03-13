@@ -15,7 +15,7 @@ export const db = {
     user: 'shuxbot@discord.bot.io',
     pass: 'BJM&83TqEe5E&BwzfsUejPdGsGhM$a'
 };
-export const TESTMode: boolean = true;
+export const TESTMode: boolean = false;
 export const serverID = '392414185633611776';
 export const channelsTC = {
     'shuxestado': {
