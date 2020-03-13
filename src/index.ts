@@ -4,7 +4,7 @@ import * as Discord from "discord.js";
 import * as firebase from "firebase/app";
 import 'firebase/database';
 import 'firebase/auth';
-import { config, firebaseConfig, serverID } from "./config";
+import { config, firebaseConfig } from "./config";
 //#endregion
 //#region Class
 /* import { DBshux } from "./dbshux"; */
@@ -12,6 +12,7 @@ import { MSGshux } from "./msg";
 import { IniBOT, intervals } from "./ini";
 import { User } from "./user";
 import { Juegos } from "./juegos";
+import { Reacciones } from "./reaction";
 //#endregion
 //#endregion
 
@@ -21,6 +22,8 @@ let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 dsclient.on("ready", () => { 
     (new IniBOT(dsclient)).iniLoading();
     intervals(dsclient);
+    const iniReac = new Reacciones(dsclient);
+    iniReac.catchingReac();
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414').then(() => { (new User(dsclient)).setPerfil(member.id); });
@@ -31,8 +34,15 @@ dsclient.on('guildMemberRemove', member => {
 dsclient.on("message", msg => {
     (new MSGshux(dsclient)).getMSG(msg);
 });
-dsclient.on('messageReactionAdd', async (reaction, user) => {  });
-dsclient.on('messageReactionRemove', async (reaction, user) => {  });
+dsclient.on('messageReactionAdd', (reaction, user) => {
+    if(reaction.message.id == '687091414676537375') {
+        console.log(reaction.emoji.name)
+    }
+    
+});
+dsclient.on('messageReactionRemove', async (reaction, user) => {
+
+});
 dsclient.on('voiceStateUpdate', (oldMember, newMember) => { 
     (new Juegos(dsclient)).autoDelteChannel();
 });
@@ -44,14 +54,3 @@ dsclient.on("presenceUpdate", (oldMember, newMember) => {
 });
 
 dsclient.login(config.token);
-
-/*  {
-    id: '637746217492807680',
-    level: 6,
-    username: 'xLukaaL2',
-    discriminator: '4754',
-    avatarUrl: 'https://cdn.discordapp.com/avatars/637746217492807680/d613038af4971c886e5fdd85f37e7df1?size=2048',
-    tag: 'xLukaaL2#4754',
-    xp: { userXp: 157, levelXp: 580, totalXp: 1782 },
-    rank: 89
-  } */

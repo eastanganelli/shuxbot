@@ -4,12 +4,11 @@ import { serverID, channelsTC, listaErr, LVLs } from "./config";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 import { Juegos } from "./juegos";
+import { TicketSup } from "./tickets";
 
 export class MSGshux {
-    oneday: number = 24*60*60*1000;
-    constructor(private dsClient: Discord.Client) {
-        
-    }
+    shuxServe: Discord.Guild = this.dsClient.guilds.find('id', serverID);
+    constructor(private dsClient: Discord.Client) {  }
     getMSG(msg: Discord.Message) {
         if(!(msg.author.bot)) { 
             if(msg.channel.type == 'dm') { this.dmSYS(msg); }
@@ -111,33 +110,13 @@ export class MSGshux {
             } else if(msg.channel.id == channelsTC.vicioroom.idTC && msg.content.toLowerCase().startsWith('shux!vcgame') && isUserEnable(channelsTC.vicioroom.roles, msg.author.id)) {
                 const TCNombre: string = msg.content.substring(('shux!vcgame ').length,);
                 (new Juegos(this.dsClient)).creategameChannel(TCNombre, msg.author.username);
-            }            
-            if(msg.channel.id == channelsTC.consulta.idTC || msg.channel.id == channelsTC.entrevista.idTC || msg.channel.id == channelsTC.sugerencia.idTC) { //TC especiales
-                if(msg.content.toLowerCase().startsWith('shux!ticket') || msg.content.toLowerCase().startsWith('shux!finticket') || isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
-                    if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.consulta.roles, msg.author.id)) {
-                        const usuario = new User(this.dsClient);
-                        let menUser = msg.mentions.users.first();
-                        await menUser.send('Su ticket de **Consulta / Ayuda** en <#'+channelsTC.consulta.idTC+'> fue cerrado.\nCalifique del 1 al 10 como fue... *Tiene 24hs (1 Día) para calificar*');
-                        await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: this.oneday, errors: ['TIME'] }).then(async (collected: any) => {
-                            usuario.updatePoints(menUser.id, 100);
-                            msg.author.send('Muchas gracias por calificar.\nHa recibido 100pts.\nSaludos, <@673655111041548288>').then(() => {
-                                const tecnicos: Discord.TextChannel|any = this.dsClient.guilds.find('id', serverID).channels.find('id', channelsTC.tecnicos.idTC);
-                                tecnicos.send('El usuario <@'+menUser.id+'> califico la **CONSULTA / AYDUA**\n**'+collected.first().content+'/10**');
-                            });
-                        }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!'); });
-                    }
-                    return;
-                } else if(msg.content.toLowerCase().startsWith('shux!sugerencia') || isUserEnable(channelsTC.sugerencia.roles, msg.author.id)) {
-                    return;
-                } else if(msg.content.toLowerCase().startsWith('shux!entrevista') || isUserEnable(channelsTC.entrevista.roles, msg.author.id)) {
-                    return;
-                } else { 
-                    if(!(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-'))){
-                        msg.delete();
-                        msg.author.send('Para publicar un mensaje en <#674045015084761127> | <#673212666210287657> | <#674408701125459968>\n Haga click en este enlace para leer los comandos de SHUX -> https://discordapp.com/channels/392414185633611776/674086159697313833/678965114656784394')
-                    }
+            } else if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.tickets.roles, msg.author.id)) {
+                if(this.shuxServe.channels.find('id', msg.channel.id).parentID == channelsTC.tickets.category) {
+                    const closeTicket_ = new TicketSup(this.dsClient);
+                    closeTicket_.cerrarTicket(msg);
                 }
-            } else if(isUserEnable(channelsTC.warnings.roles, msg.author.id)) {
+            }
+            if(isUserEnable(channelsTC.warnings.roles, msg.author.id)) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {
                     const usuario = new User(this.dsClient);
                     let menUser = msg.mentions.users.first();

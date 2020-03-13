@@ -4,7 +4,8 @@ export interface fbuser {
     warns: number;
     urlbuild: string;
     customRole: string;
-    customChat: string;
+    customChat: Array<string>;
+    customTicket: string;
 }
 export interface fbvotaciones {
     dsIDs: Array<string|number>

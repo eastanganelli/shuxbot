@@ -31,6 +31,15 @@ export class IniBOT {
 				await console.log('>>BOT READY TO GO');
 				await estadoMSG.edit(ESTADO);
 			});
+		} else {
+			const ShuxDevTC: Discord.TextChannel|any = this.dsclient.guilds.find('id', serverID).channels.find('id', channelsTC.shuxestado.idTC);
+			ShuxDevTC.fetchMessage(channelsTC.shuxestado.msg[0]).then(async(estadoMSG: any) => {
+				await estadoMSG.edit('>>**INICIANDO SERVICIOS**');
+				await firebase.auth().signInWithEmailAndPassword(db.user, db.pass).catch((Err) => { 
+				});
+				await this.botDataRefresh();
+				await estadoMSG.edit('>>**BOT ENCENDIDO!!!**');
+			});
 		}
 		
 	}

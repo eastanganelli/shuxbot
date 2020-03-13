@@ -80,7 +80,6 @@ export class User {
                     });
                 }
             }).catch(() => {});
-            
         }
     //#endregion
     //#region DB
@@ -183,6 +182,17 @@ export class User {
                 let sum = miPerfil.points + points_;
                 firebase.database().ref('/users').child(uid).update({ points: sum }); 
             }).catch(() => {});
+        }
+        updateTicket(uid: string = '-', channelID: string) {
+            const updateTicket = firebase.database().ref('/users');
+            if(uid=='-') {
+                updateTicket.once('value', snapshot => {
+                    snapshot.forEach(snap => {
+                        if(snap.val().customTicket==channelID) 
+                            updateTicket.child(String(snap.key)).child('customTicket').remove();
+                    })
+                })
+            } else { updateTicket.child(uid).update({ customTicket: channelID }); }
         }
         //#endregion
         //#region DELETE

@@ -15,7 +15,7 @@ export const db = {
     user: 'shuxbot@discord.bot.io',
     pass: 'BJM&83TqEe5E&BwzfsUejPdGsGhM$a'
 };
-export const TESTMode: boolean = true;
+export const TESTMode: boolean = false;
 export const serverID = '392414185633611776';
 export const channelsTC = {
     'shuxestado': {
@@ -43,6 +43,9 @@ export const channelsTC = {
     }, 'ciervos': {
         idTC: '676117952461930499',
         roles: ['675075371481169922']
+    }, 'tickets': {
+        category: '686615400317976587',
+        roles: ['683438860750815345', '674397839098642433', '683437732173053975']
     }, 'vicioroom': {
         idTC: '552980788539424779',
         category: '552537250718547999',
