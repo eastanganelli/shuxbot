@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID, channelsTC, listaErr, LVLs } from "./config";
+import { serverID, channelsTC, listaErr, LVLs, TESTMode } from "./config";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 import { Juegos } from "./juegos";
@@ -19,30 +19,7 @@ export class MSGshux {
     async dmSYS(msg: Discord.Message) {
         if(msg.content.toLocaleLowerCase().includes('shux!')) {
             switch (msg.content.toLocaleLowerCase()) {
-                case 'shux!addfc':{
-                    await msg.author.send('Por favor ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 63000, errors: ['TIME'] }).then((collected: any) => {
-                        let user_ = new User(this.dsClient);
-                        user_.setaddfc(msg.author.id,collected.first().content);
-                        msg.author.send('Su fecha de cumpleaños ha sido guardada');
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    break;
-                } case 'shux!presupuesto':{
-                    await msg.author.send('Estamos bajos los presupuestos');
-                    /* await msg.author.send(); */
-                    break;
-                } case 'shux!mibuild':{
-                    await msg.author.send('Por favor, ingresa su URL del build de PicPartPicker\nSi no posee un enlace, vaya a https://pcpartpicker.com/');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 60000, errors: ['TIME'] }).then((collected: any) => {
-                        let user_ = new User(this.dsClient);
-                        user_.setPCBuilf(msg.author.id,collected.first().content);
-                        msg.author.send('Su build ha sido guardada');
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    break;
-                } case 'shux!report':{
-                
-                    break;
-                } case 'shux!mirol': {    
+                case 'shux!mirol': {    
                     let datos_: Array<string> = new Array(0);  
                     await msg.author.send('Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
@@ -116,7 +93,7 @@ export class MSGshux {
                     closeTicket_.cerrarTicket(msg);
                 }
             }
-            if(isUserEnable(channelsTC.warnings.roles, msg.author.id)) {
+            if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {
                     const usuario = new User(this.dsClient);
                     let menUser = msg.mentions.users.first();

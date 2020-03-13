@@ -12,10 +12,40 @@ import { dsclient } from ".";
 const Mee6LevelsApi = require("mee6-levels-api");
 
 export class User {
+	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
 
     constructor(private dsclient: Discord.Client) {  }
 
     //#region User FNs
+        async miPerfil(uid: string) {
+		    const author: Discord.GuildMember = this.shuxServe.members.find('id', uid);
+            const listPreg: Array<string> = [
+                'Por favor, ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*',
+                'Por favor, ingresa su URL del build de PicPartPicker\nSi no posee un enlace, vaya a https://pcpartpicker.com/'
+            ];
+            await author.send('A continuación, podrá editar su perfil\n#cancelar :: terminar carga | #siguiente :: para saltear -- Tiene 5 minutos');
+            for(let i=0; i<listPreg.length; i++) {
+                await author.send(listPreg[i]);
+                await author.user.dmChannel.awaitMessages((m: any) => author.id == m.author.id, { max: 1, time: 5*60000, errors: ['TIME'] }).then((collected: any) => {
+                    if(collected.first().content == '#cancelar') {
+                        author.send('La carga fue cancelada,\nSaludos SHUX');
+                        return 0;
+                    } else if(collected.first().content == '#siguiente') {
+                        
+                    } else {
+                        switch(i) {
+                            case 0: {
+                                this.setaddfc(uid,collected.first().content);
+                                break;
+                            } case 1: {
+                                this.setPCBuilf(uid,collected.first().content);
+                                break;
+                            }
+                        }
+                    }
+                }).catch((err: any) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
+            } await author.send('La carga fue finalizada,\nSaludos SHUX');
+        }
         lvlUP(uid: string) {
             this.getMyProfile(uid).then((myPoints: number|any) => {
                 for(let i = 0; i < LVLs.length; i++) {

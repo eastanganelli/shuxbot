@@ -12,7 +12,7 @@ export class IniBOT {
 		console.log('>>LOADING BOT...');
 		if(TESTMode) {
 			const ShuxDevTC: Discord.TextChannel|any = this.dsclient.guilds.find('id', serverID).channels.find('id', channelsTC.shuxestado.idTC);
-			ShuxDevTC.fetchMessage(channelsTC.shuxestado.msg[0]).then(async(estadoMSG: any) => {
+			ShuxDevTC.fetchMessage(String(channelsTC.shuxestado.msg[0])).then(async(estadoMSG: any) => {
 				let ESTADO: Array<string> = new Array(0);
 				await estadoMSG.edit('>>**INICIANDO SERVICIOS** - ');
 				await console.log('>>>>>DEBUG MODE:' +TESTMode); await estadoMSG.edit('>>**INICIANDO SERVICIOS**\t -');

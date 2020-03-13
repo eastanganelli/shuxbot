@@ -3,6 +3,7 @@ import "firebase/database";
 import { serverID, channelsTC } from "./config";
 import { TicketSup } from "./tickets";
 import { AdminStaff } from "./admin";
+import { User } from "./user";
 
 export class Reacciones {
 	constructor(private dsclient: Discord.Client) {  }
@@ -22,6 +23,12 @@ export class Reacciones {
 					} case "📝": {
 						return true;
 						break;	
+					} case "📸": {
+						return true;
+						break;	
+					} default: {
+						return false;
+						break;
 					}
 				} return false;
 			};
@@ -46,16 +53,17 @@ export class Reacciones {
 						entreStaff.setEntrevista(nowUser.id);
 						break;	
 					} case "📸": {
-						
-						break;	
+						const usrProfile = new User(this.dsclient);
+						usrProfile.miPerfil(nowUser.id);
+						break;
 					}
-				} await msg.clearReactions();
+				}
 			});
 
 			await collector.on('end', (collected: any) => {
 				console.log(`Collected ${collected.size} items`);
 			});
-			msg.clearReactions();
+			//await msg.clearReactions();
 		})
 	}
 	
