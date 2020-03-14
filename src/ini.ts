@@ -65,7 +65,7 @@ export class IniBOT {
 	agregarReaccionesAmsgs() {
 		const msgToReact: Discord.TextChannel|any = this.shuxServe.channels.find('id', '');
 		msgToReact.fetchMessage('').then(async (msg: Discord.Message) => {
-			await msg.react("");
+			await msg.react("🏳");
 		})
 	}
 }

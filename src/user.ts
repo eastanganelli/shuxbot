@@ -98,18 +98,44 @@ export class User {
                 }
             }
         }
-        createRole(clientID: string, name_: string, color_: string) {
-            this.getMyProfile(clientID).then((miPerfil: fbuser|any) => {
-                console.log(miPerfil.customRole)
-                if(miPerfil.customRole!='' || miPerfil.customRole==undefined || miPerfil.customRole==NaN) {
-                    const shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
-                    shuxServe.createRole({ name: name_, color: color_ }).then(async(role_) => {
-                        await role_.setPosition(17);
-                        await shuxServe.member(clientID).addRole(role_.id);
-                        await this.updateRole(clientID, role_.id);
-                    });
+        async createRole(uid: string) {
+            const author: Discord.GuildMember = this.shuxServe.members.find('id', uid);
+            let roles_: Array<string> = new Array(0);
+            for(let i=LVLs.length-5; i<LVLs.length; i++) { roles_.push(LVLs[i].roleLVL); }
+            if(isUserEnable(roles_, uid)) {
+                //#region
+                const listPreg: Array<string> = [
+                    'Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar',
+                    'Por favor, ingresar el color (**Formato #COLOR** -> usar ColorPicker en Google)'
+                ];
+                let flag: boolean = false;
+                //#endregion
+                let datos_: Array<string> = new Array(0);
+                console.log(listPreg.length)
+                for(let i=0; i<listPreg.length && !flag; i++) {
+                    await author.send(listPreg[i]);
+                    await author.user.dmChannel.awaitMessages((m: any) => uid == m.author.id, { max: 1, time: 130000, errors: ['TIME'] }).then(async(collected: any) => {
+                        if(collected.first().content=='#cancelar') {
+                            author.send('Se ha quedado sin tiempo!!\nVuelva a empezar');
+                            flag = true;
+                        } else {
+                            console.log(collected.first().content);
+                            await datos_.push(collected.first().content);
+                        }
+                    }).catch((err: any) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
                 }
-            }).catch(() => {});
+                this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
+                    if(miPerfil.customRole!='' || miPerfil.customRole==undefined || miPerfil.customRole==NaN) {
+                        this.shuxServe.createRole({ name: String(datos_[0]), color: String(datos_[1]) }).then(async(role_: Discord.Role) => {
+                            console.log('cree y entre')
+                            await role_.setPosition(17);
+                            await this.shuxServe.member(uid).addRole(role_.id);
+                            await this.updateRole(uid, role_.id);
+                            await author.send('Su ROL ya fue creado!!\nSaludos, SHUX');
+                        });
+                    } else { author.send('Ya posee un rol, solicite un ticket reporte si quiere eliminarlo o modificarlo!!\nSaludos, SHUX'); }
+                }).catch(() => {});
+            } else { await author.send('No posee rango para crear un rol, debe tener minimo LVL 20!!\nSaludos, SHUX'); }
         }
     //#endregion
     //#region DB
@@ -233,7 +259,7 @@ export class User {
     //#endregion
 }
 function isUserEnable(roles: Array<string>, userDSID: string): boolean {
-    const sv: Discord.Guild|any = dsclient.guilds.get(serverID);
+    const sv: Discord.Guild = dsclient.guilds.find('id', serverID);
     for(let rol of roles) {
         if(sv.members.get(userDSID)?.roles.has(rol)) return true;
     } return false;

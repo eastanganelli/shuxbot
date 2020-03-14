@@ -19,25 +19,7 @@ export class MSGshux {
     async dmSYS(msg: Discord.Message) {
         if(msg.content.toLocaleLowerCase().includes('shux!')) {
             switch (msg.content.toLocaleLowerCase()) {
-                case 'shux!mirol': {    
-                    let datos_: Array<string> = new Array(0);  
-                    await msg.author.send('Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
-                        datos_.push(collected.first().content);
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    await msg.author.send('Por favor, ingresar el color (**Formato #COLOR** -> usar ColorPicker en Google)');
-                    await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
-                        datos_.push(collected.first().content);
-                    }).catch((err: any) => { msg.author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                    await msg.author.send('Su ROL ya fue creado!!\nSaludos, SHUX');
-                    let roles_: Array<string> = new Array(0);
-                    for(let i=LVLs.length-5; i<LVLs.length; i++) { roles_.push(LVLs[i].roleLVL); }
-                    if(isUserEnable(roles_, msg.author.id)) {
-                        const newRole = new User(this.dsClient);
-                        console.log(datos_)
-                        newRole.createRole(msg.author.id, datos_[0], datos_[1]);
-                    } break;
-                } case 'shux!micanal': {    
+                case 'shux!micanal': {    
                     let datos_: Array<string> = new Array(0);  
                     await msg.author.send('Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar');
                     await msg.author.dmChannel.awaitMessages((m: any) => msg.author.id == m.author.id, { max: 1, time: 120000, errors: ['TIME'] }).then((collected: any) => {
@@ -53,7 +35,7 @@ export class MSGshux {
                     if(isUserEnable(roles_, msg.author.id)) {
                         const newRole = new User(this.dsClient);
                         console.log(datos_)
-                        newRole.createRole(msg.author.id, datos_[0], datos_[1]);
+                        //newRole.createRole(msg.author.id, datos_[0], datos_[1]);
                     } break;
                 } default: break;
             }

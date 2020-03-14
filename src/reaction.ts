@@ -26,6 +26,9 @@ export class Reacciones {
 				} case "📸": {
 					return true;
 					break;	
+				} case "🏳️": {
+					return true;		
+					break;
 				} default: {
 					return false;
 					break;
@@ -56,6 +59,10 @@ export class Reacciones {
 						} case "📸": {
 							const usrProfile = new User(this.dsclient);
 							usrProfile.miPerfil(nowUser.id);
+							break;
+						} case "🏳️": {
+							const newRole = new User(this.dsclient);
+                     newRole.createRole(nowUser.id);
 							break;
 						}
 					} reaction.remove(nowUser.id);
