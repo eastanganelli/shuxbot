@@ -10,7 +10,7 @@ import { config, firebaseConfig } from "./config";
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
 import { IniBOT, intervals } from "./ini";
-import { User } from "./user";
+import { User, transferLvl } from "./user";
 import { Juegos } from "./juegos";
 import { Reacciones } from "./reaction";
 //#endregion
@@ -24,6 +24,7 @@ dsclient.on("ready", () => {
     intervals(dsclient);
     const iniReac = new Reacciones(dsclient);
     iniReac.catchingReac();
+    transferLvl();
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole('674086387510673414').then(() => { (new User(dsclient)).setPerfil(member.id); });

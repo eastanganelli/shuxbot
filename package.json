@@ -10,8 +10,8 @@
   "author": "Zequi",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
-    "firebase": "^7.8.1",
+    "discord.js": "^11.5.3",
+    "firebase": "^7.11.0",
     "mee6-levels-api": "^1.1.0"
   }
 }

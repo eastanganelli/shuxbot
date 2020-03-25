@@ -8,6 +8,7 @@ import { serverID, listaErr, listaPass, channelsTC, LVLs } from "./config";
 import { electos } from "./interfaces/elecciones";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
+import { Players } from "./lvlsexport";
 //#endregion
 const Mee6LevelsApi = require("mee6-levels-api");
 
@@ -82,8 +83,8 @@ export class User {
             for(let i = (LVLs.length-7); i < LVLs.length; i++) {
                 const rolAux:Discord.Role = shuxRoles.roles.find('id', LVLs[i].roleLVL);
                 ListaUsers.push(rolAux.members.array());
-            }  
-            //this.searchDeletedUser(ListaUsers);
+            }
+            this.searchDeletedUser(ListaUsers);
             return ListaUsers;
         }
         searchDeletedUser(users: Array<Array<string>>) {
@@ -261,6 +262,28 @@ export class User {
 function isUserEnable(roles: Array<string>, userDSID: string): boolean {
     const sv: Discord.Guild = dsclient.guilds.find('id', serverID);
     for(let rol of roles) {
-        if(sv.members.get(userDSID)?.roles.has(rol)) return true;
-    } return false;
+        if(sv.members.find('id', userDSID)?.roles.has(rol)) return true;
+    } 
+    return false;
+}
+export async function transferLvl() {
+    const DScliente: Discord.Client = new Discord.Client();
+    console.log(DScliente.guilds.find('id', serverID));
+	for(let users_ of Players) {
+        for(let player_ of users_.players) {
+            
+        }
+    }
+}
+export function countCharsToPoints(msg: Discord.Message) {
+	const multiplierEXP: Array<{ min: number; max: number; }> = [
+		{ min: 1, 	max: 30 },
+		{ min: 30, 	max: 60 },
+		{ min: 60, 	max: 90 },
+		{ min: 90, 	max: 120 },
+		{ min: 120, max: 160 },
+		{ min: 160, max: 200 },
+		{ min: 200, max: 240 },
+		{ min: 240, max: 2000 },
+	];
 }

@@ -5,6 +5,7 @@ import 'firebase/auth';
 import { db, serverID, TESTMode, channelsTC } from "./config";
 import { User } from "./user";
 import { Juegos } from "./juegos";
+const fetch = require('node-fetch');
 
 export class IniBOT {
 	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
@@ -65,7 +66,7 @@ export class IniBOT {
 	agregarReaccionesAmsgs() {
 		const msgToReact: Discord.TextChannel|any = this.shuxServe.channels.find('id', '');
 		msgToReact.fetchMessage('').then(async (msg: Discord.Message) => {
-			await msg.react("🏳");
+			await msg.react("");
 		})
 	}
 }

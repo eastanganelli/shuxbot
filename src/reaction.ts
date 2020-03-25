@@ -6,12 +6,12 @@ import { AdminStaff } from "./admin";
 import { User } from "./user";
 
 export class Reacciones {
-	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
+	shuxServe: any|Discord.Guild = this.dsclient.guilds.find('id', serverID);
 
 	constructor(private dsclient: Discord.Client) {  }
 	catchingReac() {
 		//#region 
-		const Comandos: any|Discord.TextChannel = this.shuxServe.channels.get('674086159697313833');
+		const Comandos: any|Discord.TextChannel = this.shuxServe.channels.find('id', '674086159697313833');
 		const filter = (reaction: any) => {
 			switch(reaction.emoji.name) {
 				case "🎟️": {
@@ -39,14 +39,14 @@ export class Reacciones {
 		Comandos.fetchMessage('687122556666511415').then(async (msg: Discord.Message) => {
 			const collector = msg.createReactionCollector(filter, /* { time: 15000 } */);
 			await collector.on('collect', async (reaction: Discord.MessageReaction, reactionCollector: Discord.ReactionCollector) => {
-				//await console.log(reaction.users);
+				await console.log(reaction.users);
 				const nowUser: any|Discord.GuildMember = reaction.users.last();
 				if(!(nowUser.id == '673655111041548288')) {
 					//console.log(nowUser.username)
 					switch(reaction.emoji.name) {
 						case "🎟️": {
 							const newTicket = new TicketSup(this.dsclient);
-							newTicket.abrirTicket(nowUser.id, nowUser.username);
+							newTicket.abrirTicket(nowUser.id, nowUser.user.username);
 							break;	
 						} case "💡": {
 							const sugStaff = new AdminStaff(this.dsclient);
@@ -69,8 +69,7 @@ export class Reacciones {
 				} 
 			});
 			await collector.on('end', (collected: any) => { console.log(`Collected ${collected.size} items`); });
-			//await msg.clearReactions();
+			await msg.clearReactions();
 		})
 	}
-	
 }
