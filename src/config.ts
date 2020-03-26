@@ -1,5 +1,5 @@
 export const config = {
-    "token": "NjczNjU1MTExMDQxNTQ4Mjg4.XjjUsw.tAK-_N4nXddPgUKImPxOD8Y9yrU",
+    "token": "NjczNjU1MTExMDQxNTQ4Mjg4.Xnv9Gg.zGW7LH6CleUXRLGeWL35ep6t65M",
     "prefix": "?"
 };
 export const firebaseConfig = {
@@ -71,6 +71,7 @@ export const listaPass = {
         info: 'Su voto fue cargado'
     }
 } ;
+export const rolPenitencia = '';
 export const LVLs: Array<{ minLvl: number; maxLvl: number; roleLVL: string }> = [
     { minLvl: 0,  maxLvl: 5,   roleLVL: '674086387510673414' },
     { minLvl: 5,  maxLvl: 10,  roleLVL: '675185452931874836' },
