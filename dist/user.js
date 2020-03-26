@@ -19,56 +19,12 @@ const Mee6LevelsApi = require("mee6-levels-api");
 class User {
     constructor(dsclient) {
         this.dsclient = dsclient;
-        this.shuxServe = this.dsclient.guilds.find('id', config_1.serverID);
     }
     miPerfil(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const author = this.shuxServe.members.find('id', uid);
-            const listPreg = [
-                'Por favor, ingrese su fecha de cumpleaños\n**FORMATO: DIA/MES* - ejemplo: 31/5*',
-                'Por favor, ingresa su URL del build de PicPartPicker\nSi no posee un enlace, vaya a https://pcpartpicker.com/'
-            ];
-            yield author.send('A continuación, podrá editar su perfil\n#cancelar :: terminar carga | #siguiente :: para saltear -- Tiene 5 minutos');
-            for (let i = 0; i < listPreg.length; i++) {
-                yield author.send(listPreg[i]);
-                yield author.user.dmChannel.awaitMessages((m) => author.id == m.author.id, { max: 1, time: 5 * 60000, errors: ['TIME'] }).then((collected) => {
-                    if (collected.first().content == '#cancelar') {
-                        author.send('La carga fue cancelada,\nSaludos SHUX');
-                        return 0;
-                    }
-                    else if (collected.first().content == '#siguiente') {
-                    }
-                    else {
-                        switch (i) {
-                            case 0: {
-                                this.setaddfc(uid, collected.first().content);
-                                break;
-                            }
-                            case 1: {
-                                this.setPCBuilf(uid, collected.first().content);
-                                break;
-                            }
-                        }
-                    }
-                }).catch((err) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-            }
-            yield author.send('La carga fue finalizada,\nSaludos SHUX');
         });
     }
     lvlUP(uid) {
-        this.getMyProfile(uid).then((myPoints) => {
-            for (let i = 0; i < config_1.LVLs.length; i++) {
-                if (myPoints >= ((config_1.LVLs[i].minLvl) * 1000) && myPoints < ((config_1.LVLs[i].maxLvl) * 1000)) {
-                    const myServer = this.dsclient.guilds.get(config_1.serverID);
-                    const User_ = myServer.fetchMember(uid);
-                    if (!(User_.roles.has(String(config_1.LVLs[i].roleLVL)))) {
-                        User_.addRole(String(config_1.LVLs[i].roleLVL));
-                        if (User_.roles.has(String(config_1.LVLs[i - 1].roleLVL)))
-                            User_.removeRole(String(config_1.LVLs[i].roleLVL));
-                    }
-                }
-            }
-        });
     }
     eleccionesWinners() {
         const elecFB = firebase.database().ref('/elecciones');
@@ -98,65 +54,9 @@ class User {
         return ListaUsers;
     }
     searchDeletedUser(users) {
-        const shuxuser = this.dsclient.guilds.find('id', config_1.serverID);
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].length > 0) {
-                for (let j = 0; j < users[i].length; j++) {
-                    const me = shuxuser.member(String(users[i][j]));
-                    console.log(me);
-                    if (!me) {
-                        console.log('No esta en el server');
-                    }
-                }
-            }
-        }
     }
     createRole(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const author = this.shuxServe.members.find('id', uid);
-            let roles_ = new Array(0);
-            for (let i = config_1.LVLs.length - 5; i < config_1.LVLs.length; i++) {
-                roles_.push(config_1.LVLs[i].roleLVL);
-            }
-            if (isUserEnable(roles_, uid)) {
-                const listPreg = [
-                    'Por favor, ingrese su nombre de Rol\nSi desea cancelar -> #cancelar',
-                    'Por favor, ingresar el color (**Formato #COLOR** -> usar ColorPicker en Google)'
-                ];
-                let flag = false;
-                let datos_ = new Array(0);
-                console.log(listPreg.length);
-                for (let i = 0; i < listPreg.length && !flag; i++) {
-                    yield author.send(listPreg[i]);
-                    yield author.user.dmChannel.awaitMessages((m) => uid == m.author.id, { max: 1, time: 130000, errors: ['TIME'] }).then((collected) => __awaiter(this, void 0, void 0, function* () {
-                        if (collected.first().content == '#cancelar') {
-                            author.send('Se ha quedado sin tiempo!!\nVuelva a empezar');
-                            flag = true;
-                        }
-                        else {
-                            console.log(collected.first().content);
-                            yield datos_.push(collected.first().content);
-                        }
-                    })).catch((err) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
-                }
-                this.getMyProfile(uid).then((miPerfil) => {
-                    if (miPerfil.customRole != '' || miPerfil.customRole == undefined || miPerfil.customRole == NaN) {
-                        this.shuxServe.createRole({ name: String(datos_[0]), color: String(datos_[1]) }).then((role_) => __awaiter(this, void 0, void 0, function* () {
-                            console.log('cree y entre');
-                            yield role_.setPosition(17);
-                            yield this.shuxServe.member(uid).addRole(role_.id);
-                            yield this.updateRole(uid, role_.id);
-                            yield author.send('Su ROL ya fue creado!!\nSaludos, SHUX');
-                        }));
-                    }
-                    else {
-                        author.send('Ya posee un rol, solicite un ticket reporte si quiere eliminarlo o modificarlo!!\nSaludos, SHUX');
-                    }
-                }).catch(() => { });
-            }
-            else {
-                yield author.send('No posee rango para crear un rol, debe tener minimo LVL 20!!\nSaludos, SHUX');
-            }
         });
     }
     getMyProfile(uid) {
