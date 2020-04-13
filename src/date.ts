@@ -4,7 +4,7 @@ import * as Discord    from "discord.js";
 import * as firebase   from "firebase/app";
 import "firebase/database";
 //#endregion
-import { serverID } from "./config";
+import { serverID } from "./const";
 import { User } from "./user";
 //#endregion
 

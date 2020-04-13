@@ -1,7 +1,7 @@
 import * as Discord from "discord.js";
 import * as firebase   from "firebase/app";
 import "firebase/database";
-import { serverID, channelsTC } from "./config";
+import { serverID, channelsTC } from "./const";
 
 export class Juegos {
 	constructor(private dsclient: Discord.Client) {  }

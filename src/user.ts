@@ -4,7 +4,7 @@ import * as Discord    from "discord.js";
 import * as firebase   from "firebase/app";
 import "firebase/database";
 //#endregion
-import { serverID, listaErr, listaPass, channelsTC, LVLs } from "./config";
+import { serverID, listaErr, listaPass, channelsTC, LVLs } from "./const";
 import { electos } from "./interfaces/elecciones";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
@@ -93,8 +93,11 @@ export class User {
                 if(users[i].length>0) {
                     for(let j=0; j<users[i].length; j++) {
                         const me: Discord.GuildMember = shuxuser.member(String(users[i][j]));
-                        console.log(me)
-                        if(!me) { console.log('No esta en el server'); }
+                        //console.log(me)
+                        if(!me) { 
+                            /* console.log('No esta en el server'); */
+                            
+                        }
                     }
                 }
             }
@@ -145,7 +148,7 @@ export class User {
                 return new Promise((resolve, reject) => {
                     const userFB = firebase.database().ref('/users').child(uid);
                     userFB.once('value', snapshot => {
-                        resolve({ points: snapshot.val().points, birth: snapshot.val().birth, warns: snapshot.val().warns, urlbuild: snapshot.val().urlbuild });
+                        resolve({ points: snapshot.val().points, birth: snapshot.val().birth, warns: snapshot.val().warns, urlbuild: snapshot.val().urlbuild, supTicket: snapshot.val().supTicket, staffTicket: snapshot.val().staffTicket });
                     }).catch(err => reject(err));
                 });
             }
@@ -179,6 +182,18 @@ export class User {
                         }).catch((err) => { reject(err); });
                     }
                 });
+            }
+            setTicketTC(uid: string, tcID: string, tipo_: string) {
+                const userFB = firebase.database().ref('/users').child(uid);
+                switch(tipo_) {
+                    case 'SUPP': {
+                        userFB.update({ supTicket: tcID });
+                        break;
+                    } case 'STAFF': {
+                        userFB.update({ staffTicket: tcID });
+                        break;
+                    }
+                }
             }
             //#region VOTO
                 votoFn(uidVoter: string, eleccionesFB: any) {
@@ -236,25 +251,48 @@ export class User {
         }
         updatePoints(uid: string, points_: number) {
             this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
-                let sum = miPerfil.points + points_;
+                let sum = points_;
+                if(miPerfil.points!=null) {
+                    sum+=miPerfil.points;
+                } 
                 firebase.database().ref('/users').child(uid).update({ points: sum }); 
             }).catch(() => {});
-        }
-        updateTicket(uid: string = '-', channelID: string) {
-            const updateTicket = firebase.database().ref('/users');
-            if(uid=='-') {
-                updateTicket.once('value', snapshot => {
-                    snapshot.forEach(snap => {
-                        if(snap.val().customTicket==channelID) 
-                            updateTicket.child(String(snap.key)).child('customTicket').remove();
-                    })
-                })
-            } else { updateTicket.child(uid).update({ customTicket: channelID }); }
         }
         //#endregion
         //#region DELETE
             deleteProfile(dsid: string) {
-                firebase.database().ref('/users').child(dsid).remove();
+                const userData = firebase.database().ref('/users').child(dsid);
+                userData.child('points').remove();
+                userData.child('birth').remove();
+                userData.child('staffTicket').remove();
+                userData.child('supTicket').remove();
+                userData.child('roles').remove();
+                userData.child('urlbuild').remove();
+                userData.once('value', snapshot => {
+                    let user_: fbuser =snapshot.val();
+                    if(user_.customRole.length>0) {
+                        this.shuxServe.roles.get(String(user_.customRole))?.delete().then(() => {
+                            userData.child('customRole').remove();
+                        });
+                    }
+                    if(user_.customChat.length>0) {
+                        for(let channel_ of user_.customRole) {
+                            this.shuxServe.channels.get(String(channel_))?.delete();
+                        } userData.child('customChat').remove();
+                    }
+                });
+            }
+            deleteTicket(uid: string, tipo_: string) {
+                const userFB = firebase.database().ref('/users').child(uid);
+                switch(tipo_) {
+                    case 'SUPP': {
+                        userFB.child('supTicket').remove();
+                        break;
+                    } case 'STAFF': {
+                        userFB.child('staffTicket').remove();
+                        break;
+                    }
+                }
             }
         //#endregion
     //#endregion
@@ -263,27 +301,14 @@ function isUserEnable(roles: Array<string>, userDSID: string): boolean {
     const sv: Discord.Guild = dsclient.guilds.find('id', serverID);
     for(let rol of roles) {
         if(sv.members.find('id', userDSID)?.roles.has(rol)) return true;
-    } 
-    return false;
+    } return false;
 }
 export async function transferLvl() {
     const DScliente: Discord.Client = new Discord.Client();
     console.log(DScliente.guilds.find('id', serverID));
 	for(let users_ of Players) {
-        for(let player_ of users_.players) {
+        for(let player_ of Players) {
             
         }
     }
-}
-export function countCharsToPoints(msg: Discord.Message) {
-	const multiplierEXP: Array<{ min: number; max: number; }> = [
-		{ min: 1, 	max: 30 },
-		{ min: 30, 	max: 60 },
-		{ min: 60, 	max: 90 },
-		{ min: 90, 	max: 120 },
-		{ min: 120, max: 160 },
-		{ min: 160, max: 200 },
-		{ min: 200, max: 240 },
-		{ min: 240, max: 2000 },
-	];
 }

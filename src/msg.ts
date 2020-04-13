@@ -1,10 +1,11 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID, channelsTC, listaErr, LVLs, TESTMode } from "./config";
+import { serverID, channelsTC, listaErr, LVLs } from "./const";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 import { Juegos } from "./juegos";
 import { TicketSup } from "./tickets";
+import { TESTMode } from "./const";
 
 export class MSGshux {
     shuxServe: Discord.Guild = this.dsClient.guilds.find('id', serverID);
@@ -15,6 +16,7 @@ export class MSGshux {
             else { this.pubSYS(msg); }
         }
         if(msg.author.bot) { return; }
+        this.getPointsByLetter(msg);
     }
     async dmSYS(msg: Discord.Message) {
         if(msg.content.toLocaleLowerCase().includes('shux!')) {
@@ -69,11 +71,23 @@ export class MSGshux {
             } else if(msg.channel.id == channelsTC.vicioroom.idTC && msg.content.toLowerCase().startsWith('shux!vcgame') && isUserEnable(channelsTC.vicioroom.roles, msg.author.id)) {
                 const TCNombre: string = msg.content.substring(('shux!vcgame ').length,);
                 (new Juegos(this.dsClient)).creategameChannel(TCNombre, msg.author.username);
-            } else if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.tickets.roles, msg.author.id)) {
+            } else if(msg.content.toLowerCase().startsWith('shux!finsoporte') && isUserEnable(channelsTC.tickets.roles, msg.author.id)) {
                 if(this.shuxServe.channels.find('id', msg.channel.id).parentID == channelsTC.tickets.category) {
-                    const closeTicket_ = new TicketSup(this.dsClient);
-                    closeTicket_.cerrarTicket(msg);
+                    if(msg.mentions.users.first().id!=undefined) {
+                        const closeTicket_ = new TicketSup(this.dsClient);
+                        closeTicket_.cerrarTicket(msg, 'SUPP');
+                    } else msg.reply('No se menciono al usuario con ticket a cerrar');
                 }
+            } else if(msg.content.toLowerCase().startsWith('shux!finticket') && isUserEnable(channelsTC.staff.roles, msg.author.id)) {
+                if(this.shuxServe.channels.find('id', msg.channel.id).parentID == channelsTC.tickets.category) {
+                    if(msg.mentions.users.first().id!=undefined) {
+                        const closeTicket_ = new TicketSup(this.dsClient);
+                        closeTicket_.cerrarTicket(msg, 'STAFF');
+                    } else msg.reply('No se menciono al usuario con ticket a cerrar');
+                }
+            } else if (msg.content.toLocaleLowerCase().startsWith('aschente') && msg.channel.id === channelsTC.reglas.idTC) {
+                msg.delete();
+                msg.member.addRole(LVLs[0].roleLVL);
             }
             if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {
@@ -110,10 +124,36 @@ export class MSGshux {
             }
         }
     }
+    getPointsByLetter(msg: Discord.Message) {
+        let points: number = countCharsToPoints(msg);
+        const upPoints = new User(this.dsClient);
+        upPoints.updatePoints(msg.author.id, points);
+    }
 }
 function isUserEnable(roles: Array<string>, userDSID: string): boolean {
     const sv: Discord.Guild|any = dsclient.guilds.get(serverID);
     for(let rol of roles) {
         if(sv.members.get(userDSID)?.roles.has(rol)) return true;
     } return false;
+}
+function countCharsToPoints(msg: Discord.Message) {
+	const multiplierEXP: Array<{ min: number; max: number; }> = [
+		{ min: 1, 	 max: 250 },  //x1
+		{ min: 250,	 max: 500 },  //x2
+		{ min: 500,	 max: 750 },  //x3
+		{ min: 750,	 max: 1000 }, //x4
+		{ min: 1000, max: 1250 }, //x5
+		{ min: 1250, max: 1500 }, //x6
+		{ min: 1500, max: 1750 }, //x7
+		{ min: 1750, max: 2000 }  //x8
+    ];
+    let mPoints: number = 0, flag: boolean = false;
+    for(let i: number=0; i<multiplierEXP.length && !flag; i++) {
+        if(String(msg.content).length>=multiplierEXP[i].min&&String(msg.content).length<multiplierEXP[i].max) { 
+            let mylength: number = msg.content.length, charP: number = 0.1, multiplicador: number = i+1;
+            mPoints += mylength*multiplicador*charP;
+            console.log(String(msg.content).length,'ID', msg.author.username,'Points', mPoints)
+            flag=true;
+        }
+    } return mPoints;
 }

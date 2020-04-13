@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { serverID, channelsTC } from "./config";
+import { serverID, channelsTC } from "./const";
 
 export class AdminStaff {
 	shuxServe: Discord.Guild = this.dsClient.guilds.find('id', serverID);

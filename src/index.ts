@@ -13,6 +13,7 @@ import { IniBOT, intervals } from "./ini";
 import { User, transferLvl } from "./user";
 import { Juegos } from "./juegos";
 import { Reacciones } from "./reaction";
+import { rolNoRules } from "./const";
 //#endregion
 //#endregion
 
@@ -27,7 +28,7 @@ dsclient.on("ready", () => {
     transferLvl();
 });
 dsclient.on("guildMemberAdd", member => { 
-    member.addRole('674086387510673414').then(() => { (new User(dsclient)).setPerfil(member.id); });
+    member.addRole(rolNoRules).then(() => { (new User(dsclient)).setPerfil(member.id); });
 });
 dsclient.on('guildMemberRemove', member => {
     
@@ -36,7 +37,7 @@ dsclient.on("message", msg => {
     (new MSGshux(dsclient)).getMSG(msg);
 });
 dsclient.on('messageReactionAdd', (reaction, user) => {
-        
+    if(!(user.bot)) { (new Reacciones(dsclient)).catchingReac(); }
 });
 dsclient.on('messageReactionRemove', async (reaction, user) => {
 

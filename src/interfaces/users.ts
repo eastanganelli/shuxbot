@@ -5,7 +5,9 @@ export interface fbuser {
     urlbuild: string;
     customRole: string;
     customChat: Array<string>;
-    customTicket: string;
+    supTicket: string;
+    staffTicket: string;
+    roles: Array<string>;
 }
 export interface fbvotaciones {
     dsIDs: Array<string|number>
