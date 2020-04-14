@@ -51,7 +51,8 @@ export class MSGshux {
                     let embed_: Discord.RichEmbed = new Discord.RichEmbed();
                     embed_.setTitle('Perfil de '+msg.author.username).setThumbnail(msg.author.displayAvatarURL).setColor('red').addField('Cumpleaños: ', String(miPerfil.birth), false)
                     .addField('Mi PC: ', miPerfil.urlbuild, false)
-                    .addField('Warnings: ', miPerfil.warns, false)
+                    .addField('Puntos: ', miPerfil.points==null? '-': Math.floor(miPerfil.points), false)
+                    .addField('Warnings: ', miPerfil.warns==null? '-': miPerfil.warns, false)
                     .setTimestamp(msg.guild.members.get(msg.author.id)?.joinedAt)
                     msg.channel.send(embed_);
                 }).catch(() => {
@@ -85,9 +86,11 @@ export class MSGshux {
                         closeTicket_.cerrarTicket(msg, 'STAFF');
                     } else msg.reply('No se menciono al usuario con ticket a cerrar');
                 }
-            } else if (msg.content.toLocaleLowerCase().startsWith('aschente') && msg.channel.id === channelsTC.reglas.idTC) {
-                msg.delete();
-                msg.member.addRole(LVLs[0].roleLVL);
+            } else if (msg.content.toLocaleLowerCase().startsWith('aschente') && msg.channel.id === channelsTC.comandos.idTC) {
+                msg.member.addRole(LVLs[0].roleLVL).then(() => {
+                    msg.delete();
+                    msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
+                });
             }
             if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {

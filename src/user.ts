@@ -16,7 +16,6 @@ export class User {
 	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
 
     constructor(private dsclient: Discord.Client) {  }
-
     //#region User FNs
         async miPerfil(uid: string) {
 		    const author: Discord.GuildMember = this.shuxServe.members.find('id', uid);
@@ -47,18 +46,19 @@ export class User {
                 }).catch((err: any) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
             } await author.send('La carga fue finalizada,\nSaludos SHUX');
         }
-        lvlUP(uid: string) {
-            this.getMyProfile(uid).then((myPoints: number|any) => {
-                for(let i = 0; i < LVLs.length; i++) {
-                    if(myPoints>=((LVLs[i].minLvl)*1000) && myPoints<((LVLs[i].maxLvl)*1000)) {
-                        const myServer: Discord.Guild|any = this.dsclient.guilds.get(serverID);
-                        const User_: Discord.GuildMember = myServer.fetchMember(uid);
-                        if(!(User_.roles.has(String(LVLs[i].roleLVL)))) {
-                            User_.addRole(String(LVLs[i].roleLVL));
-                            if(User_.roles.has(String(LVLs[i-1].roleLVL))) User_.removeRole(String(LVLs[i].roleLVL));
-                        }
+        changeLVL(uid: string) {
+            this.getMyProfile(uid).then((snapshot: any) => {
+                const usuario: fbuser = snapshot;
+                if(usuario.points==null) return;
+                let userShux: Discord.GuildMember = this.shuxServe.member(uid);
+                let subeNivel: { newLVL: boolean; idLVL: string, oldLVL: string } = lvlUP(usuario.points, userShux.roles.keyArray());
+                if(subeNivel.newLVL && subeNivel.idLVL!=subeNivel.oldLVL) {
+                    if(!(userShux.roles.has(subeNivel.idLVL))) {
+                        userShux.addRole(subeNivel.idLVL).then(() => {
+                            userShux.removeRole(subeNivel.oldLVL);
+                        });
                     }
-                }
+                } return;
             });
         }
         eleccionesWinners() {
@@ -141,6 +141,7 @@ export class User {
                 }).catch(() => {});
             } else { await author.send('No posee rango para crear un rol, debe tener minimo LVL 20!!\nSaludos, SHUX'); }
         }
+        
     //#endregion
     //#region DB
         //#region GET
@@ -254,33 +255,14 @@ export class User {
                 let sum = points_;
                 if(miPerfil.points!=null) {
                     sum+=miPerfil.points;
-                } 
-                firebase.database().ref('/users').child(uid).update({ points: sum }); 
+                } firebase.database().ref('/users').child(uid).update({ points: sum });
+                this.changeLVL(uid);
             }).catch(() => {});
         }
         //#endregion
         //#region DELETE
             deleteProfile(dsid: string) {
-                const userData = firebase.database().ref('/users').child(dsid);
-                userData.child('points').remove();
-                userData.child('birth').remove();
-                userData.child('staffTicket').remove();
-                userData.child('supTicket').remove();
-                userData.child('roles').remove();
-                userData.child('urlbuild').remove();
-                userData.once('value', snapshot => {
-                    let user_: fbuser =snapshot.val();
-                    if(user_.customRole.length>0) {
-                        this.shuxServe.roles.get(String(user_.customRole))?.delete().then(() => {
-                            userData.child('customRole').remove();
-                        });
-                    }
-                    if(user_.customChat.length>0) {
-                        for(let channel_ of user_.customRole) {
-                            this.shuxServe.channels.get(String(channel_))?.delete();
-                        } userData.child('customChat').remove();
-                    }
-                });
+                const userData = firebase.database().ref('/users').child(dsid).remove();
             }
             deleteTicket(uid: string, tipo_: string) {
                 const userFB = firebase.database().ref('/users').child(uid);
@@ -303,12 +285,20 @@ function isUserEnable(roles: Array<string>, userDSID: string): boolean {
         if(sv.members.find('id', userDSID)?.roles.has(rol)) return true;
     } return false;
 }
-export async function transferLvl() {
-    const DScliente: Discord.Client = new Discord.Client();
-    console.log(DScliente.guilds.find('id', serverID));
-	for(let users_ of Players) {
-        for(let player_ of Players) {
-            
+function lvlUP(userPoints: number, roles_: string[]): { newLVL: boolean; idLVL: string, oldLVL: string} {
+    let actualLVL: string = '-';
+    for(let lvls_ of LVLs) {
+        for(let myLvl of roles_) {
+            if(myLvl==lvls_.roleLVL) { 
+                actualLVL=lvls_.roleLVL;
+                break;
+            }
         }
     }
+    for(let lvls_ of LVLs) {
+        if(userPoints>=(lvls_.minLvl*1000)&&userPoints<(lvls_.maxLvl*1000)) { 
+            return { newLVL: true, idLVL: lvls_.roleLVL, oldLVL: actualLVL };
+        }
+    } 
+    return { newLVL: false, idLVL: '-', oldLVL: '-' };
 }

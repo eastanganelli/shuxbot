@@ -10,7 +10,7 @@ import { config, firebaseConfig } from "./config";
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
 import { IniBOT, intervals } from "./ini";
-import { User, transferLvl } from "./user";
+import { User } from "./user";
 import { Juegos } from "./juegos";
 import { Reacciones } from "./reaction";
 import { rolNoRules } from "./const";
@@ -25,7 +25,6 @@ dsclient.on("ready", () => {
     intervals(dsclient);
     const iniReac = new Reacciones(dsclient);
     iniReac.catchingReac();
-    transferLvl();
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole(rolNoRules).then(() => { (new User(dsclient)).setPerfil(member.id); });
