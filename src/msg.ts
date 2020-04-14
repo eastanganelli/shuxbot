@@ -16,7 +16,7 @@ export class MSGshux {
             else { this.pubSYS(msg); }
         }
         if(msg.author.bot) { return; }
-        this.getPointsByLetter(msg);
+        //this.getPointsByLetter(msg);
     }
     async dmSYS(msg: Discord.Message) {
         if(msg.content.toLocaleLowerCase().includes('shux!')) {
@@ -86,11 +86,11 @@ export class MSGshux {
                         closeTicket_.cerrarTicket(msg, 'STAFF');
                     } else msg.reply('No se menciono al usuario con ticket a cerrar');
                 }
-            } else if (msg.content.toLocaleLowerCase().startsWith('aschente') && msg.channel.id === channelsTC.comandos.idTC) {
-                msg.member.addRole(LVLs[0].roleLVL);
-                msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
-                msg.member.removeRole(rolNoRules);
+            } else if(msg.content.toLocaleLowerCase()=='aschente' && msg.channel.id === channelsTC.comandos.idTC) {
                 msg.delete();
+                msg.member.addRole(LVLs[0].roleLVL);
+                msg.member.removeRole(rolNoRules, 'Acepto las reglas');
+                msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
             }
             if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {

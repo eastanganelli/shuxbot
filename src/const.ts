@@ -68,17 +68,17 @@ export const listaPass = {
 export const rolPenitencia = '675715236870881320';
 export const rolNoRules    = '694011168305709096';
 export const LVLs: Array<{ minLvl: number; maxLvl: number; roleLVL: string }> = [
-    { minLvl: 0,  maxLvl: 5,     roleLVL: '674086387510673414' },
-    { minLvl: 5,  maxLvl: 10,    roleLVL: '675185452931874836' },
-    { minLvl: 10, maxLvl: 15,    roleLVL: '675185597589225502' },
-    { minLvl: 15, maxLvl: 20,    roleLVL: '675185648466133052' },
-    { minLvl: 20, maxLvl: 25,    roleLVL: '675185689872039946' },
-    { minLvl: 25, maxLvl: 30,    roleLVL: '675185738815373312' },
-    { minLvl: 30, maxLvl: 35,    roleLVL: '675185783673454622' },
-    { minLvl: 35, maxLvl: 40,    roleLVL: '675185839772270612' },
-    { minLvl: 40, maxLvl: 50,    roleLVL: '675185892276699141' },
-    { minLvl: 50, maxLvl: 75,    roleLVL: '699262270982586448' },
-    { minLvl: 75, maxLvl: 100,   roleLVL: '699262346538909808' },
-    { minLvl: 100, maxLvl: 150,  roleLVL: '699262436112597002' },
-    { minLvl: 150, maxLvl: 200,  roleLVL: '699262653830398012' },
+    { minLvl: 0,   maxLvl: 5,   roleLVL: '674086387510673414' },
+    { minLvl: 5,   maxLvl: 10,  roleLVL: '675185452931874836' },
+    { minLvl: 10,  maxLvl: 15,  roleLVL: '675185597589225502' },
+    { minLvl: 15,  maxLvl: 20,  roleLVL: '675185648466133052' },
+    { minLvl: 20,  maxLvl: 25,  roleLVL: '675185689872039946' },
+    { minLvl: 25,  maxLvl: 30,  roleLVL: '675185738815373312' },
+    { minLvl: 30,  maxLvl: 35,  roleLVL: '675185783673454622' },
+    { minLvl: 35,  maxLvl: 40,  roleLVL: '675185839772270612' },
+    { minLvl: 40,  maxLvl: 50,  roleLVL: '675185892276699141' },
+    { minLvl: 50,  maxLvl: 75,  roleLVL: '699262270982586448' },
+    { minLvl: 75,  maxLvl: 100, roleLVL: '699262346538909808' },
+    { minLvl: 100, maxLvl: 150, roleLVL: '699262436112597002' },
+    { minLvl: 150, maxLvl: 200, roleLVL: '699262653830398012' }
 ];

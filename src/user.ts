@@ -1,16 +1,14 @@
 //#region IMPORTS
 //#region Plug
-import * as Discord    from "discord.js";
-import * as firebase   from "firebase/app";
+import * as Discord  from "discord.js";
+import * as firebase from "firebase/app";
 import "firebase/database";
 //#endregion
 import { serverID, listaErr, listaPass, channelsTC, LVLs } from "./const";
 import { electos } from "./interfaces/elecciones";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
-import { Players } from "./lvlsexport";
 //#endregion
-const Mee6LevelsApi = require("mee6-levels-api");
 
 export class User {
 	shuxServe: Discord.Guild = this.dsclient.guilds.find('id', serverID);
@@ -251,8 +249,8 @@ export class User {
             }).catch(() => {});
         }
         updatePoints(uid: string, points_: number) {
-            this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
-                let sum = points_;
+            this.getMyProfile(uid).then((snap: any)  => {
+                let sum = points_, miPerfil: fbuser = snap;
                 if(miPerfil.points!=null) {
                     sum+=miPerfil.points;
                 } firebase.database().ref('/users').child(uid).update({ points: sum });
