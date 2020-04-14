@@ -87,10 +87,9 @@ export class MSGshux {
                     } else msg.reply('No se menciono al usuario con ticket a cerrar');
                 }
             } else if (msg.content.toLocaleLowerCase().startsWith('aschente') && msg.channel.id === channelsTC.comandos.idTC) {
-                msg.member.addRole(LVLs[0].roleLVL).then(() => {
-                    msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
-                    msg.member.removeRole(rolNoRules);
-                });
+                msg.member.addRole(LVLs[0].roleLVL);
+                msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
+                msg.member.removeRole(rolNoRules);
                 msg.delete();
             }
             if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
