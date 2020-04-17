@@ -83,8 +83,8 @@ export class Reacciones {
 										this.shuxServe.member(nowUser.id).addRoles(impRole, 'Usuario Acepto las Reglas');
 										const msgchan: any|Discord.TextChannel=this.shuxServe.channels.find('id', channelsTC.chatgeneral.idTC);
 										msgchan.send('<@'+nowUser.id+'> **Bienvenido a Shux!!**\nPor favor, recuerde que para pedir ayuda de hardware/software, debe abrir un ticket en 🧰comandos-tickets\nPara hablar de Hardware, y otros temas, usar sus canales respectivos.\nSaludos, Shux');
-									}
-							  
+										break;
+									}							  
 						 		}
 								
 								break;
