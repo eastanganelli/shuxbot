@@ -10,10 +10,10 @@ import { config, firebaseConfig } from "./config";
 /* import { DBshux } from "./dbshux"; */
 import { MSGshux } from "./msg";
 import { IniBOT, intervals } from "./ini";
-import { User } from "./user";
+import { User, updateDB } from "./user";
 import { Juegos } from "./juegos";
 import { Reacciones } from "./reaction";
-import { rolNoRules } from "./const";
+import { channelsTC } from "./const";
 //#endregion
 //#endregion
 
@@ -23,11 +23,11 @@ let app: firebase.app.App = firebase.initializeApp(firebaseConfig);
 dsclient.on("ready", () => { 
     (new IniBOT(dsclient)).iniLoading();
     intervals(dsclient);
-    const iniReac = new Reacciones(dsclient);
-    iniReac.catchingReac();
+    (new Reacciones(dsclient)).catchingReac();
+    (new User(dsclient)).asignarViejosMiembros()
 });
 dsclient.on("guildMemberAdd", member => { 
-    member.addRole(rolNoRules).then(() => { (new User(dsclient)).setPerfil(member.id); });
+    member.addRole(channelsTC.reglas.roles[1]).then(() => { (new User(dsclient)).setPerfil(member.id); });
 });
 dsclient.on('guildMemberRemove', member => {
     
@@ -36,7 +36,7 @@ dsclient.on("message", msg => {
     (new MSGshux(dsclient)).getMSG(msg);
 });
 dsclient.on('messageReactionAdd', (reaction, user) => {
-    if(!(user.bot)) { (new Reacciones(dsclient)).catchingReac(); }
+    if(!(user.bot)) { /* (new Reacciones(dsclient)).catchingReac(); */ }
 });
 dsclient.on('messageReactionRemove', async (reaction, user) => {
 

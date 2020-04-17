@@ -2,16 +2,25 @@ export const TESTMode = false;
 export const version = "3.0.2"
 export const serverID = '392414185633611776';
 export const channelsTC = {
-    'reglas': {
+    'reglas': { 
         idTC: '509680096915750913',
-        roles: ['']
+        roles: ['700343155593183255', '694011168305709096', '675715236870881320']
     }, 'comandos': {
         idTC: '674086159697313833',
+        msg: ['687122556666511415', '688036583399489641'],
         roles: ['457666332402647041', '673222890673668156', '691370234078298132', '674080985733791754']
+    }, 'chatgeneral': {
+        idTC: '699036236295176202',
+        roles: ['']
     }, 'shuxestado': {
         idTC: '683095482012008500',
         roles: ['674088910024081441'],
         msg: ['683497971836256276', '684092742405718050', '684092743802290194', '684092745232416829']
+    }, 'hablemosde': {
+        category: '674044853084225611',
+        idTC: ['579189008647585834', '674106351319777280', '685320706279473172', '685321706373644320', '691401879946657822'],
+        idVC: ['699399889381097472'],
+        roles: '700303680833847316'
     }, 'warnings': {
         idTC: '675344555511382040',
         roles: ['457666332402647041', '474020722235146250', '673222890673668156', '510572522366959647']
@@ -64,9 +73,7 @@ export const listaPass = {
         code: 'PassXVoto',
         info: 'Su voto fue cargado'
     }
-} ;
-export const rolPenitencia = '675715236870881320';
-export const rolNoRules    = '694011168305709096';
+};
 export const LVLs: Array<{ minLvl: number; maxLvl: number; roleLVL: string }> = [
     { minLvl: 0,   maxLvl: 5,   roleLVL: '674086387510673414' },
     { minLvl: 5,   maxLvl: 10,  roleLVL: '675185452931874836' },

@@ -15,17 +15,20 @@ export class TicketSup {
 			switch(tipoT) {
 				case 'SUPP': {
 					console.log(userData.supTicket);
-					if(userData.supTicket!=undefined) { flag_=false; }
+					if(userData.supTicket!=undefined && !(userData.supTicket)) { flag_=false; }
+					else if(!(userData.supTicket)) { flag_=false; }
 					break;
 				} case 'STAFF': {
 					console.log(userData.staffTicket);
-					if(userData.staffTicket!=undefined) { flag_=false; }
+					if(userData.staffTicket!=undefined && !(userData.staffTicket)) { flag_=false; }
+					else if(!(userData.staffTicket)) { flag_=false; }
 					break;
 				}
 			}
+			console
 			if(flag_) {
 				const nombre_: string = tipoT+'-'+usrname;
-				this.shuxServe.createChannel(String(nombre_), "text").then(async channel => {
+				this.shuxServe.createChannel(String(nombre_), "text").then(async (channel: Discord.GuildChannel) => {
 					const saveChannel = new User(this.dsclient);
 					let category = this.shuxServe.channels.find(c => c.id == channelsTC.tickets.category && c.type == "category");
 					if (!category) throw new Error("Category channel does not exist");
@@ -33,17 +36,23 @@ export class TicketSup {
 					await channel.lockPermissions();
 					switch(tipoT) {
 						case 'SUPP': {
-							saveChannel.setTicketTC(uid, channel.id, 'SUPP');
+							saveChannel.setTicketTC(uid, 'SUPP');
 							await channel.overwritePermissions(uid, { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true, 'READ_MESSAGE_HISTORY': true, 'EMBED_LINKS': true, 'ATTACH_FILES': true });
 							for(let rol_ of channelsTC.tecnicos.roles) {
 								await channel.overwritePermissions(rol_, { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true, 'READ_MESSAGE_HISTORY': true, 'EMBED_LINKS': true, 'ATTACH_FILES': true });
-							} break;
+							} 
+							const msg: any|Discord.TextChannel = this.shuxServe.channels.get(channel.id);
+							await msg.send('<@'+uid+'> Su Ticket Soporte ya fue abierto');
+							break;
 						} case 'STAFF': {
-							saveChannel.setTicketTC(uid, channel.id, 'STAFF');
+							saveChannel.setTicketTC(uid, 'STAFF');
 							await channel.overwritePermissions(uid, { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true, 'READ_MESSAGE_HISTORY': true, 'EMBED_LINKS': true, 'ATTACH_FILES': true });
 							for(let rol_ of channelsTC.tecnicos.roles) {
 								await channel.overwritePermissions(rol_, { 'VIEW_CHANNEL': false, 'SEND_MESSAGES': false, 'READ_MESSAGE_HISTORY': false, 'EMBED_LINKS': false, 'ATTACH_FILES': false });
-							} break;
+							} 
+							const msg: any|Discord.TextChannel = this.shuxServe.channels.get(channel.id);
+							await msg.send('<@'+uid+'> Su Ticket Staff ya fue abierto');
+							break;
 						}
 					}
 				}).catch(/* console.error */);

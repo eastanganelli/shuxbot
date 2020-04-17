@@ -44,6 +44,20 @@ export class User {
                 }).catch((err: any) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
             } await author.send('La carga fue finalizada,\nSaludos SHUX');
         }
+        asignarViejosMiembros(){
+            const usuariosShux: Array<Discord.GuildMember> = this.shuxServe.members.array();
+            let i=0;
+            setInterval(() => {
+                    for(let miLvl of LVLs) {
+                        if(usuariosShux[i].roles.has(miLvl.roleLVL)) {
+                            usuariosShux[i].addRole('700343155593183255').catch(() => {});
+                            break;
+                        }
+                    
+                } i++;
+                console.log(i,' de ', usuariosShux.length);
+            }, 1000);
+        }
         changeLVL(uid: string) {
             this.getMyProfile(uid).then((snapshot: any) => {
                 const usuario: fbuser = snapshot;
@@ -147,7 +161,7 @@ export class User {
                 return new Promise((resolve, reject) => {
                     const userFB = firebase.database().ref('/users').child(uid);
                     userFB.once('value', snapshot => {
-                        resolve({ points: snapshot.val().points, birth: snapshot.val().birth, warns: snapshot.val().warns, urlbuild: snapshot.val().urlbuild, supTicket: snapshot.val().supTicket, staffTicket: snapshot.val().staffTicket });
+                        resolve(snapshot.exportVal());
                     }).catch(err => reject(err));
                 });
             }
@@ -155,7 +169,7 @@ export class User {
         //#region SET
             setPerfil(uid: string) {
                 const userFB = firebase.database().ref('/users').child(uid);
-                userFB.set({ birth: '-', points: 0, warns: 0, urlbuild: '-' });
+                userFB.set({ birth: '-', points: 0, warns: 0 });
             }
             setaddfc(uid: string, fecha: string){
                 const userFB = firebase.database().ref('/users').child(uid);
@@ -182,14 +196,14 @@ export class User {
                     }
                 });
             }
-            setTicketTC(uid: string, tcID: string, tipo_: string) {
+            setTicketTC(uid: string, tipo_: string) {
                 const userFB = firebase.database().ref('/users').child(uid);
                 switch(tipo_) {
                     case 'SUPP': {
-                        userFB.update({ supTicket: tcID });
+                        userFB.update({ supTicket: true });
                         break;
                     } case 'STAFF': {
-                        userFB.update({ staffTicket: tcID });
+                        userFB.update({ staffTicket: true });
                         break;
                     }
                 }
@@ -223,56 +237,56 @@ export class User {
             setWarn(uid: string) { firebase.database().ref('/users').child(uid).update({ warns: 1 }); }
         //#endregion
         //#region UPDATE
-        updateRole(uid: string, flag: string) {
-            firebase.database().ref('/users').child(uid).update({ customRole: flag }).catch((err: any) => console.log(err));
-        }
-        updateWarn(uid: string, addrm: string) {
-            this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
-                console.log(miPerfil.warns);
-                if((miPerfil.warns==0 || miPerfil.warns==undefined || miPerfil.warns==NaN) && (addrm != '-')) {
-                    this.setWarn(uid);
-                    return;
-                }
-                {
-                    let sum = miPerfil.warns;
-                    switch(addrm) {
-                        case '+': {
-                            sum+=1;
-                            break;
-                        } case '-': {
-                            if(sum > 0) sum-=1;
-                            break;
-                        }
+            updateRole(uid: string, flag: string) {
+                firebase.database().ref('/users').child(uid).update({ customRole: flag }).catch((err: any) => console.log(err));
+            }
+            updateWarn(uid: string, addrm: string) {
+                this.getMyProfile(uid).then((miPerfil: fbuser|any) => {
+                    console.log(miPerfil.warns);
+                    if((miPerfil.warns==0 || miPerfil.warns==undefined || miPerfil.warns==NaN) && (addrm != '-')) {
+                        this.setWarn(uid);
+                        return;
                     }
-                    firebase.database().ref('/users').child(uid).update({ warns: sum }); 
-                }
-            }).catch(() => {});
-        }
-        updatePoints(uid: string, points_: number) {
-            this.getMyProfile(uid).then((snap: any)  => {
-                let sum = points_, miPerfil: fbuser = snap;
-                if(miPerfil.points!=null) {
-                    sum+=miPerfil.points;
-                } firebase.database().ref('/users').child(uid).update({ points: sum });
-                this.changeLVL(uid);
-            }).catch(() => {});
-        }
-        //#endregion
-        //#region DELETE
-            deleteProfile(dsid: string) {
-                const userData = firebase.database().ref('/users').child(dsid).remove();
+                    {
+                        let sum = miPerfil.warns;
+                        switch(addrm) {
+                            case '+': {
+                                sum+=1;
+                                break;
+                            } case '-': {
+                                if(sum > 0) sum-=1;
+                                break;
+                            }
+                        }
+                        firebase.database().ref('/users').child(uid).update({ warns: sum }); 
+                    }
+                }).catch(() => {});
+            }
+            updatePoints(uid: string, points_: number) {
+                this.getMyProfile(uid).then((snap: any)  => {
+                    let sum = points_, miPerfil: fbuser = snap;
+                    if(miPerfil.points!=null) {
+                        sum+=miPerfil.points;
+                    } firebase.database().ref('/users').child(uid).update({ points: sum });
+                    this.changeLVL(uid);
+                }).catch(() => {});
             }
             deleteTicket(uid: string, tipo_: string) {
                 const userFB = firebase.database().ref('/users').child(uid);
                 switch(tipo_) {
                     case 'SUPP': {
-                        userFB.child('supTicket').remove();
+                        userFB.update({ supTicket: false });
                         break;
                     } case 'STAFF': {
-                        userFB.child('staffTicket').remove();
+                        userFB.update({ staffTicket: false });
                         break;
                     }
                 }
+            }
+        //#endregion
+        //#region DELETE
+            deleteProfile(dsid: string) {
+                const userData = firebase.database().ref('/users').child(dsid).remove();
             }
         //#endregion
     //#endregion
@@ -299,4 +313,11 @@ function lvlUP(userPoints: number, roles_: string[]): { newLVL: boolean; idLVL: 
         }
     } 
     return { newLVL: false, idLVL: '-', oldLVL: '-' };
+}
+export function updateDB() {
+    firebase.database().ref('/users').on('value', snapshot => {
+        snapshot.forEach(snap => {
+            console.log(snap.exportVal());
+        });
+    });
 }

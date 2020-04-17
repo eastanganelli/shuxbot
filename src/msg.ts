@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { User } from "./user";
-import { serverID, channelsTC, listaErr, LVLs, rolNoRules } from "./const";
+import { serverID, channelsTC, listaErr, LVLs } from "./const";
 import { fbuser } from "./interfaces/users";
 import { dsclient } from ".";
 import { Juegos } from "./juegos";
@@ -86,12 +86,12 @@ export class MSGshux {
                         closeTicket_.cerrarTicket(msg, 'STAFF');
                     } else msg.reply('No se menciono al usuario con ticket a cerrar');
                 }
-            } else if(msg.content.toLocaleLowerCase()=='aschente' && msg.channel.id === channelsTC.comandos.idTC) {
+            }/*  else if(msg.content.toLocaleLowerCase()=='aschente' && msg.channel.id === channelsTC.comandos.idTC) {
                 msg.delete();
                 msg.member.addRole(LVLs[0].roleLVL);
                 msg.member.removeRole(rolNoRules, 'Acepto las reglas');
                 msg.author.send('**Bienvenido a SHUX!!!**\nA partir de ahora podrá ver todo el contenido y canales disponibles!\nRecuerde respestar las reglas que acepto para que no le caiga la ley encima!\n Shux Staff');
-            }
+            } */
             if((isUserEnable(channelsTC.warnings.roles, msg.author.id)) && (!(TESTMode))) {
                 if(msg.content.toLocaleLowerCase().startsWith('shux!warn') && msg.content.toLocaleLowerCase().includes('-')) {
                     const usuario = new User(this.dsClient);

@@ -3,11 +3,8 @@ export interface fbuser {
     birth: string;
     warns: number;
     urlbuild: string;
-    customRole: string;
-    customChat: Array<string>;
-    supTicket: string;
-    staffTicket: string;
-    roles: Array<string>;
+    supTicket: boolean;
+    staffTicket: boolean;
 }
 export interface fbvotaciones {
     dsIDs: Array<string|number>

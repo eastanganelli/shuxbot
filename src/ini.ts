@@ -46,7 +46,7 @@ export class IniBOT {
 				await estadoMSG.edit('>>**BOT ENCENDIDO!!!**');
 				await estadoMSG.edit('BOT Version **'+version+'**\n');
 			});
-		}
+		} //this.agregarReaccionesAmsgs()
 	}
 	botDataRefresh() {
 		const usrRanking: Array<Array<any>> = (new User(this.dsclient)).listaTopUsers();
@@ -67,10 +67,28 @@ export class IniBOT {
 		}, 30000);
 	}
 	agregarReaccionesAmsgs() {
-		const msgToReact: Discord.TextChannel|any = this.shuxServe.channels.find('id', '');
-		msgToReact.fetchMessage('').then(async (msg: Discord.Message) => {
-			await msg.react("");
-		})
+		const addReac = [
+			{
+				idTC: '674086159697313833',
+				data: [{
+					id: '688036583399489641',
+					emojis: ["📸", "💡", "🎟️", "shux"]
+				}, {
+					id: '687122556666511415',
+					emojis: ["✅", "🎙️" ]
+				}]
+			},
+		];
+		for(let _Chan of addReac) {
+			const msgToReact: Discord.TextChannel|any = this.shuxServe.channels.find('id', _Chan.idTC);
+			for(let _data of _Chan.data) {
+				msgToReact.fetchMessage(_data.id).then(async (msg: Discord.Message) => {
+					for(let thisReact of _data.emojis) {
+						await msg.react(msg.guild.emojis.find('name', thisReact).id);
+					}
+				})
+			}
+		}
 	}
 }
 export function intervals(dsclient: Discord.Client) {

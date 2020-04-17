@@ -20,18 +20,15 @@ class Reacciones {
         this.shuxServe = this.dsclient.guilds.find('id', const_1.serverID);
     }
     catchingReac() {
-        const Comandos = this.shuxServe.channels.find('id', '674086159697313833');
+        const Comandos = this.shuxServe.channels.find('id', const_1.channelsTC.comandos.idTC);
         const filter = (reaction) => {
+            console.log(reaction.emoji.name);
             switch (reaction.emoji.name) {
                 case "🎟️": {
                     return true;
                     break;
                 }
                 case "💡": {
-                    return true;
-                    break;
-                }
-                case "📝": {
                     return true;
                     break;
                 }
@@ -43,6 +40,14 @@ class Reacciones {
                     return true;
                     break;
                 }
+                case "✅": {
+                    return true;
+                    break;
+                }
+                case "🎙️": {
+                    return true;
+                    break;
+                }
                 default: {
                     return false;
                     break;
@@ -50,43 +55,60 @@ class Reacciones {
             }
             return false;
         };
-        Comandos.fetchMessage('687122556666511415').then((msg) => __awaiter(this, void 0, void 0, function* () {
-            const collector = msg.createReactionCollector(filter);
-            yield collector.on('collect', (reaction, reactionCollector) => __awaiter(this, void 0, void 0, function* () {
-                const nowUser = reaction.users.last();
-                switch (reaction.emoji.name) {
-                    case "🎟️": {
-                        const newTicket = new tickets_1.TicketSup(this.dsclient);
-                        newTicket.abrirTicket(nowUser.id, nowUser.username, 'SUPP');
-                        break;
+        for (let msg_ of const_1.channelsTC.comandos.msg) {
+            Comandos.fetchMessage(msg_).then((msg) => __awaiter(this, void 0, void 0, function* () {
+                const collector = msg.createReactionCollector(filter);
+                yield collector.on('collect', (reaction, reactionCollector) => __awaiter(this, void 0, void 0, function* () {
+                    const nowUser = reaction.users.first();
+                    if (!(nowUser.bot)) {
+                        switch (reaction.emoji.name) {
+                            case "🎟️": {
+                                const newTicket = new tickets_1.TicketSup(this.dsclient);
+                                newTicket.abrirTicket(nowUser.id, nowUser.username, 'SUPP');
+                                break;
+                            }
+                            case "shux": {
+                                const newTicket = new tickets_1.TicketSup(this.dsclient);
+                                newTicket.abrirTicket(nowUser.id, nowUser.username, 'STAFF');
+                                break;
+                            }
+                            case "💡": {
+                                const sugStaff = new admin_1.AdminStaff(this.dsclient);
+                                sugStaff.setSugerencia(nowUser.id);
+                                break;
+                            }
+                            case "📸": {
+                                const usrProfile = new user_1.User(this.dsclient);
+                                usrProfile.miPerfil(nowUser.id);
+                                break;
+                            }
+                            case "✅": {
+                                for (let miLvl of const_1.LVLs) {
+                                    if (this.shuxServe.member(nowUser.id).roles.has(miLvl.roleLVL)) {
+                                        this.shuxServe.member(nowUser.id).addRole(const_1.channelsTC.reglas.roles[0], 'Usuario Acepto las Reglas');
+                                        break;
+                                    }
+                                    else {
+                                        this.shuxServe.member(nowUser.id).removeRole(const_1.channelsTC.reglas.roles[1], 'Usuario Acepto las Reglas');
+                                        const impRole = [const_1.channelsTC.reglas.roles[0], const_1.LVLs[0].roleLVL];
+                                        this.shuxServe.member(nowUser.id).addRoles(impRole, 'Usuario Acepto las Reglas');
+                                        const msgchan = this.shuxServe.channels.find('id', const_1.channelsTC.chatgeneral.idTC);
+                                        msgchan.send('<@' + nowUser.id + '> **Bienvenido a Shux!!**\nPor favor, recuerde que para pedir ayuda de hardware/software, debe abrir un ticket en 🧰comandos-tickets\nPara hablar de Hardware, y otros temas, usar sus canales respectivos.\nSaludos, Shux');
+                                    }
+                                }
+                                break;
+                            }
+                            case "🎙️": {
+                                this.shuxServe.member(nowUser.id).addRole(const_1.channelsTC.hablemosde.roles, 'Acepto Ver Hablemos De...');
+                                break;
+                            }
+                        }
+                        yield reaction.remove(nowUser.id);
                     }
-                    case "shux": {
-                        const newTicket = new tickets_1.TicketSup(this.dsclient);
-                        newTicket.abrirTicket(nowUser.id, nowUser.username, 'STAFF');
-                        break;
-                    }
-                    case "💡": {
-                        const sugStaff = new admin_1.AdminStaff(this.dsclient);
-                        sugStaff.setSugerencia(nowUser.id);
-                        break;
-                    }
-                    case "📸": {
-                        const usrProfile = new user_1.User(this.dsclient);
-                        usrProfile.miPerfil(nowUser.id);
-                        break;
-                    }
-                    case "🏳️": {
-                        const newRole = new user_1.User(this.dsclient);
-                        newRole.createRole(nowUser.id);
-                        break;
-                    }
-                }
-                yield reaction.remove(nowUser.id);
-                reactionCollector.cleanup();
+                }));
             }));
-            yield collector.on('end', (collected) => { console.log(`Collected ${collected.size} items`); });
-        }));
+        }
     }
 }
 exports.Reacciones = Reacciones;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVhY3Rpb24uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvcmVhY3Rpb24udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7QUFDQSw2QkFBMkI7QUFDM0IsbUNBQStDO0FBQy9DLHVDQUFzQztBQUN0QyxtQ0FBcUM7QUFDckMsaUNBQThCO0FBRTlCLE1BQWEsVUFBVTtJQUd0QixZQUFvQixRQUF3QjtRQUF4QixhQUFRLEdBQVIsUUFBUSxDQUFnQjtRQUY1QyxjQUFTLEdBQXNCLElBQUksQ0FBQyxRQUFRLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxJQUFJLEVBQUUsZ0JBQVEsQ0FBQyxDQUFDO0lBRXhCLENBQUM7SUFDbEQsWUFBWTtRQUVYLE1BQU0sUUFBUSxHQUE0QixJQUFJLENBQUMsU0FBUyxDQUFDLFFBQVEsQ0FBQyxJQUFJLENBQUMsSUFBSSxFQUFFLG9CQUFvQixDQUFDLENBQUM7UUFDbkcsTUFBTSxNQUFNLEdBQUcsQ0FBQyxRQUFhLEVBQUUsRUFBRTtZQUNoQyxRQUFPLFFBQVEsQ0FBQyxLQUFLLENBQUMsSUFBSSxFQUFFO2dCQUMzQixLQUFLLEtBQUssQ0FBQyxDQUFDO29CQUNYLE9BQU8sSUFBSSxDQUFDO29CQUNaLE1BQU07aUJBQ047Z0JBQUMsS0FBSyxJQUFJLENBQUMsQ0FBQztvQkFDWixPQUFPLElBQUksQ0FBQztvQkFDWixNQUFNO2lCQUNOO2dCQUFDLEtBQUssSUFBSSxDQUFDLENBQUM7b0JBQ1osT0FBTyxJQUFJLENBQUM7b0JBQ1osTUFBTTtpQkFDTjtnQkFBQyxLQUFLLElBQUksQ0FBQyxDQUFDO29CQUNaLE9BQU8sSUFBSSxDQUFDO29CQUNaLE1BQU07aUJBQ047Z0JBQUMsS0FBSyxNQUFNLENBQUMsQ0FBQztvQkFDZCxPQUFPLElBQUksQ0FBQztvQkFDWixNQUFNO2lCQUNOO2dCQUdJLE9BQU8sQ0FBQyxDQUFDO29CQUNiLE9BQU8sS0FBSyxDQUFDO29CQUNiLE1BQU07aUJBQ047YUFD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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVhY3Rpb24uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvcmVhY3Rpb24udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7QUFDQSw2QkFBMkI7QUFDM0IsbUNBQXFEO0FBQ3JELHVDQUFzQztBQUN0QyxtQ0FBcUM7QUFDckMsaUNBQThCO0FBRTlCLE1BQWEsVUFBVTtJQUd0QixZQUFvQixRQUF3QjtRQUF4QixhQUFRLEdBQVIsUUFBUSxDQUFnQjtRQUY1QyxjQUFTLEdBQWtCLElBQUksQ0FBQyxRQUFRLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxJQUFJLEVBQUUsZ0JBQVEsQ0FBQyxDQUFDO0lBRXBCLENBQUM7SUFDbEQsWUFBWTtRQUVYLE1BQU0sUUFBUSxHQUE0QixJQUFJLENBQUMsU0FBUyxDQUFDLFFBQVEsQ0FBQyxJQUFJLENBQUMsSUFBSSxFQUFFLGtCQUFVLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQ3ZHLE1BQU0sTUFBTSxHQUFHLENBQUMsUUFBYSxFQUFFLEVBQUU7WUFDaEMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxRQUFRLENBQUMsS0FBSyxDQUFDLElBQUksQ0FBQyxDQUFBO1lBQ2hDLFFBQU8sUUFBUSxDQUFDLEtBQUssQ0FBQyxJQUFJLEVBQUU7Z0JBQzNCLEtBQUssS0FBSyxDQUFDLENBQUM7b0JBQ1gsT0FBTyxJQUFJLENBQUM7b0JBQ1osTUFBTTtpQkFDTjtnQkFBQyxLQUFLLElBQUksQ0FBQyxDQUFDO29CQUNaLE9BQU8sSUFBSSxDQUFDO29CQUNaLE1BQU07aUJBQ047Z0JBR0ksS0FBSyxJQUFJLENBQUMsQ0FBQztvQkFDZixPQUFPLElBQUksQ0FBQztvQkFDWixNQUFNO2lCQUNOO2dCQUFDLEtBQUssTUFBTSxDQUFDLENBQUM7b0JBQ2QsT0FBTyxJQUFJLENBQUM7b0JBQ1osTUFBTTtpQkFDTjtnQkFBQyxLQUFLLEdBQUcsQ0FBQyxDQUFDO29CQUNYLE9BQU8sSUFBSSxDQUFD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
