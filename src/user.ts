@@ -44,7 +44,7 @@ export class User {
                 }).catch((err: any) => { author.send('Se ha quedado sin tiempo!!\nVuelva a empezar'); });
             } await author.send('La carga fue finalizada,\nSaludos SHUX');
         }
-        asignarViejosMiembros(){
+        /* asignarViejosMiembros(){
             const usuariosShux: Array<Discord.GuildMember> = this.shuxServe.members.array();
             let i=0;
             setInterval(() => {
@@ -57,7 +57,7 @@ export class User {
                 } i++;
                 console.log(i,' de ', usuariosShux.length);
             }, 1000);
-        }
+        } */
         changeLVL(uid: string) {
             this.getMyProfile(uid).then((snapshot: any) => {
                 const usuario: fbuser = snapshot;

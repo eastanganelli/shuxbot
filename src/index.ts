@@ -24,7 +24,7 @@ dsclient.on("ready", () => {
     (new IniBOT(dsclient)).iniLoading();
     intervals(dsclient);
     (new Reacciones(dsclient)).catchingReac();
-    (new User(dsclient)).asignarViejosMiembros()
+    /* (new User(dsclient)).asignarViejosMiembros() */
 });
 dsclient.on("guildMemberAdd", member => { 
     member.addRole(channelsTC.reglas.roles[1]).then(() => { (new User(dsclient)).setPerfil(member.id); });
