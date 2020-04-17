@@ -73,23 +73,25 @@ export class Reacciones {
 								usrProfile.miPerfil(nowUser.id);
 								break;
 							} case "✅": {
+								const impRole: Array<string>=[channelsTC.reglas.roles[0], LVLs[0].roleLVL];
 								for(let miLvl of LVLs) {
 									if(this.shuxServe.member(nowUser.id).roles.has(miLvl.roleLVL)) {
-										this.shuxServe.member(nowUser.id).addRole(channelsTC.reglas.roles[0], 'Usuario Acepto las Reglas');
+										await this.shuxServe.member(nowUser.id).addRole(impRole[0], 'Usuario Acepto las Reglas');
 										break;
 									} else {
-										this.shuxServe.member(nowUser.id).removeRole(channelsTC.reglas.roles[1],  'Usuario Acepto las Reglas');
-										const impRole: Array<string>=[channelsTC.reglas.roles[0], LVLs[0].roleLVL];
-										this.shuxServe.member(nowUser.id).addRoles(impRole, 'Usuario Acepto las Reglas');
+										await this.shuxServe.member(nowUser.id).removeRole(channelsTC.reglas.roles[1],  'Usuario Acepto las Reglas');
+										await this.shuxServe.member(nowUser.id).addRoles(impRole, 'Usuario Acepto las Reglas');
 										const msgchan: any|Discord.TextChannel=this.shuxServe.channels.find('id', channelsTC.chatgeneral.idTC);
-										msgchan.send('<@'+nowUser.id+'> **Bienvenido a Shux!!**\nPor favor, recuerde que para pedir ayuda de hardware/software, debe abrir un ticket en 🧰comandos-tickets\nPara hablar de Hardware, y otros temas, usar sus canales respectivos.\nSaludos, Shux');
+										await msgchan.send('<@'+nowUser.id+'> **Bienvenido a Shux!!**\nPor favor, recuerde que para pedir ayuda de hardware/software, debe abrir un ticket en 🧰comandos-tickets\nPara hablar de Hardware, y otros temas, usar sus canales respectivos.\nSaludos, Shux');
 										break;
 									}							  
 						 		}
 								
 								break;
 							} case "🎙️": {
-								this.shuxServe.member(nowUser.id).addRole(channelsTC.hablemosde.roles, 'Acepto Ver Hablemos De...');
+								if(this.shuxServe.member(nowUser.id).roles.has(channelsTC.comandos.roles[0])) {
+									await this.shuxServe.member(nowUser.id).addRole(channelsTC.hablemosde.roles, 'Acepto Ver Hablemos De...');
+								}
 								break;
 							}
 						} await reaction.remove(nowUser.id);

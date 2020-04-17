@@ -26,7 +26,7 @@ export class TicketSup {
 				}
 			}
 			console
-			if(flag_) {
+			if(!flag_) {
 				const nombre_: string = tipoT+'-'+usrname;
 				this.shuxServe.createChannel(String(nombre_), "text").then(async (channel: Discord.GuildChannel) => {
 					const saveChannel = new User(this.dsclient);
