@@ -89,9 +89,9 @@ export class Reacciones {
 								
 								break;
 							} case "🎙️": {
-								if(this.shuxServe.member(nowUser.id).roles.has(channelsTC.comandos.roles[0])) {
+								//if(this.shuxServe.member(nowUser.id).roles.has(channelsTC.comandos.roles[0])) {
 									await this.shuxServe.member(nowUser.id).addRole(channelsTC.hablemosde.roles, 'Acepto Ver Hablemos De...');
-								}
+								//}
 								break;
 							}
 						} await reaction.remove(nowUser.id);
