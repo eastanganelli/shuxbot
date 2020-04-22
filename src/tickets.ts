@@ -55,9 +55,9 @@ export class TicketSup {
 							break;
 						} case 'STAFF': {
 							saveChannel.setTicketTC(uid, 'STAFF');
-							await channel.overwritePermissions(uid, ticketsperms.soporte_.usuario);
+							await channel.overwritePermissions(uid, ticketsperms.shux_.usuario);
 							for(let rol_ of channelsTC.tecnicos.roles) {
-								await channel.overwritePermissions(rol_, ticketsperms.soporte_.tecnicos);
+								await channel.overwritePermissions(rol_, ticketsperms.shux_.tecnicos);
 							} 
 							const msg: any|Discord.TextChannel = this.shuxServe.channels.get(channel.id);
 							await msg.send('<@'+uid+'> Su Ticket Staff ya fue abierto');
