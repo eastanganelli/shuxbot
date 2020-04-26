@@ -1,6 +1,7 @@
 export const TESTMode = false;
-export const version = "3.0.2"
-export const serverID = '392414185633611776';
+export const version = "1.0.0"
+export const copyright = 'https://www.copyrighted.com/work/0ZkPCJkhgSn3ROhf';
+export const serverID = '';
 export const channelsTC = {
     'reglas': { 
         idTC: '509680096915750913',

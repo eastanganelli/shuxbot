@@ -13,7 +13,7 @@ import { IniBOT, intervals } from "./ini";
 import { User, updateDB } from "./user";
 import { Juegos } from "./juegos";
 import { Reacciones } from "./reaction";
-import { channelsTC } from "./const";
+import { channelsTC, serverID } from "./const";
 //#endregion
 //#endregion
 
@@ -24,6 +24,9 @@ dsclient.on("ready", () => {
     (new IniBOT(dsclient)).iniLoading();
     intervals(dsclient);
     (new Reacciones(dsclient)).catchingReac();
+    dsclient.guilds.find('id', serverID).channels.forEach((channel_: Discord.GuildChannel) => {
+        console.log('Nombre:',channel_.name,'- tipo',channel_.type);
+    })
     /* (new User(dsclient)).asignarViejosMiembros() */
 });
 dsclient.on("guildMemberAdd", member => { 
